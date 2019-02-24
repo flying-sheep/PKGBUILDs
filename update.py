@@ -96,9 +96,9 @@ def get_pkgs():
         cat = pkg_info['Category'] = pkg2cat(name)
         if not cat: nocat.add(name)
         superfluous -= {name}
-    if nocat: print('No category for:', nocat)
-    if superfluous: print('Superfluous packages:', superfluous)
-
+    if superfluous: print('Superfluous packages:', superfluous, file=sys.stderr)
+    if nocat:
+        raise RuntimeError(f'No category for: {nocat}')
     return pkgs
 
 
