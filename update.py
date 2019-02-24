@@ -3,12 +3,11 @@
 import sys
 import asyncio
 from itertools import islice
+from datetime import timedelta, datetime
 from pathlib import Path
 
 import requests
 import requests_cache
-
-requests_cache.install_cache('update', expire_after=20*60)  # 20m
 
 blacklist = {'kuiviewer-git', 'libgtextutils', 'kgraphviewer-frameworks-git'}
 categories = {
@@ -103,7 +102,7 @@ def get_pkgs():
     return pkgs
 
 
-def limited_as_completed(coros, limit):
+def limited_as_completed(coros, limit: int):
     futures = [
         asyncio.ensure_future(c)
         for c in islice(coros, 0, limit)
@@ -124,42 +123,52 @@ def limited_as_completed(coros, limit):
         yield first_to_finish()
 
 
-async def clone_or_pull(path, repo):
-    path = Path(path)
+async def clone_or_pull(path: Path, repo: str, *, expire_after: timedelta):
     if path.is_dir():
+        modified = datetime.utcfromtimestamp(path.stat().st_mtime)
+        update = datetime.utcnow() - modified > expire_after
         args = ('-C', str(path), 'pull', '--rebase')
     else:
         path.parent.mkdir(parents=True, exist_ok=True)
+        update = True
         args = ('clone', repo, str(path))
-    proc = await asyncio.create_subprocess_exec(
-        'git', *args,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    stdout, stderr = await proc.communicate()
-    return path, proc, stdout, stderr
+    if update:
+        proc = await asyncio.create_subprocess_exec(
+            'git', *args,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        rc = proc.returncode
+        stdout, stderr = await proc.communicate()
+    else:
+        rc, stdout, stderr = 0, b'', b''
+    if rc == 0:
+        path.touch()
+    return path, rc, stdout, stderr
 
 
-async def sync_submodules(pkgs):
+async def sync_submodules(pkgs, *, expire_after: timedelta):
     coros = [
         clone_or_pull(
-            f'checkouts/{p["Category"]}/{p["Name"]}',
+            Path(f'checkouts/{p["Category"]}/{p["Name"]}'),
             f'ssh://aur@aur.archlinux.org/{p["Name"]}.git',
+            expire_after=expire_after,
         ) for p in pkgs
     ]
     for f in limited_as_completed(iter(coros), 4):
-        path, proc, stdout, stderr = await f
-        if proc.returncode != 0:
-            print(path, 'errored:', stdout)
-            print(path, 'errored:', stderr, file=sys.stderr)
-        else:
-            print(path, 'succeeded:', stdout)
-            print(path, 'succeeded:', stderr, file=sys.stderr)
+        path, rc, stdout, stderr = await f
+        if rc != 0:
+            if stdout: print(path, 'errored:', stdout)
+            if stderr: print(path, 'errored:', stderr, file=sys.stderr)
+
+
+expire = timedelta(minutes=20)
 
 
 async def main():
+    requests_cache.install_cache('update', expire_after=expire)
     pkgs = get_pkgs()
-    await sync_submodules(pkgs)
+    await sync_submodules(pkgs, expire_after=expire)
 
 
 if __name__ == '__main__':
