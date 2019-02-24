@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
+
+import asyncio
+
 import requests
 import requests_cache
 
 requests_cache.install_cache('update', expire_after=20*60)  # 20m
 
-blacklist = {'kuiviewer-git', 'libgtextutils'}
+blacklist = {'kuiviewer-git', 'libgtextutils', 'kgraphviewer-frameworks-git'}
 categories = {
     'CLI': {
         'git-archive-all-git',
@@ -16,7 +19,6 @@ categories = {
         'desktop-privileges',
         'desktop-privileges-nogroups',
         'kcm-pointing-devices-git',
-        'kgraphviewer-frameworks-git',
     },
     'Fonts': {
         'otf-texgyre-pagella-math',
@@ -77,19 +79,43 @@ def pkg2cat(pkg: str) -> str:
         if f(pkg): return c
 
 
-search = requests.get('https://aur.archlinux.org/rpc/?v=5&type=search&by=maintainer&arg=flying-sheep').json()
-pkgs = [
-    pkg_info
-    for pkg_info in search['results']
-    if pkg_info['Name'] not in blacklist
-]
+def get_pkgs():
+    search = requests.get('https://aur.archlinux.org/rpc/?v=5&type=search&by=maintainer&arg=flying-sheep').json()
+    pkgs = [
+        pkg_info
+        for pkg_info in search['results']
+        if pkg_info['Name'] not in blacklist and pkg_info['Name'] == pkg_info['PackageBase']
+    ]
 
-superfluous = set(_pkg2cat_str.keys())
-nocat = set()
-for pkg_info in pkgs:
-    name = pkg_info['Name']
-    cat = pkg_info['Category'] = pkg2cat(name)
-    if not cat: nocat.add(name)
-    superfluous -= {name}
-if nocat: print('No category for:', nocat)
-if superfluous: print('Superfluous packages:', superfluous)
+    superfluous = set(_pkg2cat_str.keys())
+    nocat = set()
+    for pkg_info in pkgs:
+        name = pkg_info['Name']
+        cat = pkg_info['Category'] = pkg2cat(name)
+        if not cat: nocat.add(name)
+        superfluous -= {name}
+    if nocat: print('No category for:', nocat)
+    if superfluous: print('Superfluous packages:', superfluous)
+
+    return pkgs
+
+
+async def sync_submodules(pkgs):
+    pass
+    #TODO: check out instead?
+    #for p in pkgs:
+    #    await asyncio.create_subprocess_exec(
+    #        'git', 'submodule', 'add',
+    #        f'ssh://aur@aur.archlinux.org/{p["Name"]}.git',
+    #        f'checkouts/{p["Category"]}/{p["Name"]}',
+    #    )
+    #await asyncio.create_subprocess_exec('git', 'submodule', 'update', '--init', '--remote', '--rebase')
+
+
+async def main():
+    pkgs = get_pkgs()
+    await sync_submodules(pkgs)
+
+
+if __name__ == '__main__':
+    asyncio.run(main())
