@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
+import sys
 import asyncio
+from itertools import islice
+from pathlib import Path
 
 import requests
 import requests_cache
@@ -100,16 +103,58 @@ def get_pkgs():
     return pkgs
 
 
+def limited_as_completed(coros, limit):
+    futures = [
+        asyncio.ensure_future(c)
+        for c in islice(coros, 0, limit)
+    ]
+    async def first_to_finish():
+        while True:
+            await asyncio.sleep(0)
+            for f in futures:
+                if f.done():
+                    futures.remove(f)
+                    try:
+                        newf = next(coros)
+                        futures.append(asyncio.ensure_future(newf))
+                    except StopIteration:
+                        pass
+                    return f.result()
+    while futures:
+        yield first_to_finish()
+
+
+async def clone_or_pull(path, repo):
+    path = Path(path)
+    if path.is_dir():
+        args = ('-C', str(path), 'pull', '--rebase')
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        args = ('clone', repo, str(path))
+    proc = await asyncio.create_subprocess_exec(
+        'git', *args,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+    stdout, stderr = await proc.communicate()
+    return path, proc, stdout, stderr
+
+
 async def sync_submodules(pkgs):
-    pass
-    #TODO: check out instead?
-    #for p in pkgs:
-    #    await asyncio.create_subprocess_exec(
-    #        'git', 'submodule', 'add',
-    #        f'ssh://aur@aur.archlinux.org/{p["Name"]}.git',
-    #        f'checkouts/{p["Category"]}/{p["Name"]}',
-    #    )
-    #await asyncio.create_subprocess_exec('git', 'submodule', 'update', '--init', '--remote', '--rebase')
+    coros = [
+        clone_or_pull(
+            f'checkouts/{p["Category"]}/{p["Name"]}',
+            f'ssh://aur@aur.archlinux.org/{p["Name"]}.git',
+        ) for p in pkgs
+    ]
+    for f in limited_as_completed(iter(coros), 4):
+        path, proc, stdout, stderr = await f
+        if proc.returncode != 0:
+            print(path, 'errored:', stdout)
+            print(path, 'errored:', stderr, file=sys.stderr)
+        else:
+            print(path, 'succeeded:', stdout)
+            print(path, 'succeeded:', stderr, file=sys.stderr)
 
 
 async def main():
