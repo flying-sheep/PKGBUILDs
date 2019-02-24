@@ -5,6 +5,7 @@ import asyncio
 from itertools import islice
 from datetime import timedelta, datetime
 from pathlib import Path
+from typing import Union, Optional
 
 import requests
 import requests_cache
@@ -147,19 +148,46 @@ async def clone_or_pull(path: Path, repo: str, *, expire_after: timedelta):
     return path, rc, stdout, stderr
 
 
+def pkg_path(pkg):
+    return Path(f'checkouts/{pkg["Category"]}/{pkg["PackageBase"]}')
+
+
+def pkg_url(pkg):
+    return f'ssh://aur@aur.archlinux.org/{pkg["PackageBase"]}.git'
+
+
 async def sync_submodules(pkgs, *, expire_after: timedelta):
-    coros = [
-        clone_or_pull(
-            Path(f'checkouts/{p["Category"]}/{p["Name"]}'),
-            f'ssh://aur@aur.archlinux.org/{p["Name"]}.git',
-            expire_after=expire_after,
-        ) for p in pkgs
-    ]
+    coros = [clone_or_pull(pkg_path(pkg), pkg_url(pkg), expire_after=expire_after) for pkg in pkgs]
     for f in limited_as_completed(iter(coros), 4):
         path, rc, stdout, stderr = await f
         if rc != 0:
             if stdout: print(path, 'errored:', stdout)
             if stderr: print(path, 'errored:', stderr, file=sys.stderr)
+
+
+def import_from_path(path: Path, name: Optional[str] = None):
+    if name is None:
+        name = path.with_suffix('').name
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(name, str(path))
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def get_versions(pkgs):
+    for pkg in pkgs:
+        p = pkg_path(pkg)
+        v = None
+        if (p / 'version.py').is_file():
+            v = import_from_path(p / 'version.py').version()
+        elif pkg['Category'] == 'Python':
+            pass # PIP lookup
+        elif pkg['Category'] == 'JS':
+            pass # Node lookup
+        
+        if v is None:
+            raise RuntimeError(f'Could not determine version of {pkg["PackageBase"]}')
 
 
 expire = timedelta(minutes=20)
@@ -169,6 +197,7 @@ async def main():
     requests_cache.install_cache('update', expire_after=expire)
     pkgs = get_pkgs()
     await sync_submodules(pkgs, expire_after=expire)
+    get_versions(pkgs)
 
 
 if __name__ == '__main__':
