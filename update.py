@@ -46,6 +46,7 @@ categories = {
         lambda x: x.startswith('nodejs-'),
         'gulp-cli',
         'sencha-cmd-6',
+        'v8-3.14-bin',
     },
     'Jupyter': {
         lambda x: x.startswith('jupyter_') or x.startswith('jupyter-'),
@@ -139,8 +140,9 @@ async def clone_or_pull(path: Path, repo: str, *, expire_after: timedelta):
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
-        rc = proc.returncode
         stdout, stderr = await proc.communicate()
+        await proc.wait()
+        rc = proc.returncode
     else:
         rc, stdout, stderr = 0, b'', b''
     if rc == 0:
@@ -161,8 +163,8 @@ async def sync_submodules(pkgs, *, expire_after: timedelta):
     for f in limited_as_completed(iter(coros), 4):
         path, rc, stdout, stderr = await f
         if rc != 0:
-            if stdout: print(path, 'errored:', stdout)
-            if stderr: print(path, 'errored:', stderr, file=sys.stderr)
+            if stdout: print(f'{path} errored ({rc}): {stdout.decode("utf-8").strip()}')
+            if stderr: print(f'{path} errored ({rc}): {stderr.decode("utf-8").strip()}', file=sys.stderr)
 
 
 def import_from_path(path: Path, name: Optional[str] = None):
