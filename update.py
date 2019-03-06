@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 
+import re
 import sys
+import json
 import asyncio
 from itertools import islice
 from datetime import timedelta, datetime
 from pathlib import Path
-from typing import Union, Optional
+from typing import Any, Union, Optional, NamedTuple
 
 import requests
 import requests_cache
@@ -76,27 +78,77 @@ _pkg2cat_fn = [
     for p in pkgs
     if callable(p)
 ]
-def pkg2cat(pkg: str) -> str:
-    cat = _pkg2cat_str.get(pkg)
+def pkg2cat(pkg_name: str) -> str:
+    cat = _pkg2cat_str.get(pkg_name)
     if cat is not None: return cat
     for f, c in _pkg2cat_fn:
-        if f(pkg): return c
+        if f(pkg_name): return c
+
+
+class Package(NamedTuple):
+    id: int
+    name: str
+    package_base_id: int
+    package_base: str
+    version: str
+    description: str
+    url: str
+    num_votes: int
+    popularity: int
+    out_of_date: Optional[datetime]
+    maintainer: str
+    first_submitted: datetime
+    last_modified: datetime
+    url_path: Path
+    
+    @property
+    def category(self):
+        return pkg2cat(self.name)
+    
+    @classmethod
+    def from_json(cls, data: dict):
+        def camel_to_snake(camel: str) -> str:
+            first_converted = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', camel)
+            return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', first_converted).lower()
+            #return re.sub(r'(?<=^_)(u_r_l|i_d)(?=_$)', lambda x: x.replace('_', ''), exploded_snake)
+        
+        def typeconv(value: Any, typ: type) -> Any:
+            if getattr(typ, '__origin__', None) is Union:
+                args = set(getattr(typ, '__args__', ()))
+                if len(args) == 2 and type(None) in args:
+                    if value is None:
+                        typ = lambda n: n
+                    else:
+                        typ = next(iter(args - {type(None)}))
+            if typ is datetime:
+                typ = datetime.fromtimestamp
+            try:
+                return typ(value)
+            except Exception:
+                print(f'Error trying to convert {value!r} to {typ}:', file=sys.stderr)
+                raise
+        
+        kv = {}
+        for k_camel, v_raw in data.items():
+            k = camel_to_snake(k_camel)
+            v = typeconv(v_raw, cls._field_types[k])
+            kv[k] = v
+        return cls(**kv)
 
 
 def get_pkgs():
     search = requests.get('https://aur.archlinux.org/rpc/?v=5&type=search&by=maintainer&arg=flying-sheep').json()
     pkgs = [
         pkg_info
-        for pkg_info in search['results']
-        if pkg_info['Name'] not in blacklist and pkg_info['Name'] == pkg_info['PackageBase']
+        for pkg_info in map(Package.from_json, search['results'])
+        if pkg_info.name not in blacklist and pkg_info.name == pkg_info.package_base
     ]
 
     superfluous = set(_pkg2cat_str.keys())
     nocat = set()
     for pkg_info in pkgs:
-        name = pkg_info['Name']
-        cat = pkg_info['Category'] = pkg2cat(name)
-        if not cat: nocat.add(name)
+        name = pkg_info.name
+        if not pkg_info.category: nocat.add(name)
         superfluous -= {name}
     if superfluous: print('Superfluous packages:', superfluous, file=sys.stderr)
     if nocat:
@@ -151,11 +203,11 @@ async def clone_or_pull(path: Path, repo: str, *, expire_after: timedelta):
 
 
 def pkg_path(pkg):
-    return Path(f'checkouts/{pkg["Category"]}/{pkg["PackageBase"]}')
+    return Path(f'checkouts/{pkg.category}/{pkg.package_base}')
 
 
 def pkg_url(pkg):
-    return f'ssh://aur@aur.archlinux.org/{pkg["PackageBase"]}.git'
+    return f'ssh://aur@aur.archlinux.org/{pkg.package_base}.git'
 
 
 async def sync_submodules(pkgs, *, expire_after: timedelta):
@@ -183,13 +235,13 @@ def get_versions(pkgs):
         v = None
         if (p / 'version.py').is_file():
             v = import_from_path(p / 'version.py').version()
-        elif pkg['Category'] == 'Python':
+        elif pkg.category == 'Python':
             pass # PIP lookup
-        elif pkg['Category'] == 'JS':
+        elif pkg.category == 'JS':
             pass # Node lookup
         
         if v is None:
-            raise RuntimeError(f'Could not determine version of {pkg["PackageBase"]}')
+            raise RuntimeError(f'Could not determine version of {pkg.package_base}')
 
 
 expire = timedelta(minutes=20)
