@@ -18,7 +18,9 @@ from typing import NamedTuple, List, Tuple
 import requests
 import requests_cache
 
-blacklist = {'kuiviewer-git', 'libgtextutils', 'kgraphviewer-frameworks-git'}
+blacklist = {
+    'python-tbvaccine',  # https://github.com/pypa/warehouse/issues/5535
+}
 categories = {
     'CLI': {
         'git-archive-all-git',
@@ -146,9 +148,9 @@ class Package(NamedTuple):
 def get_pkgs() -> List[Package]:
     search = requests.get('https://aur.archlinux.org/rpc/?v=5&type=search&by=maintainer&arg=flying-sheep').json()
     pkgs = [
-        pkg_info
-        for pkg_info in map(Package.from_json, search['results'])
-        if pkg_info.name not in blacklist and pkg_info.name == pkg_info.package_base
+        pkg
+        for pkg in map(Package.from_json, search['results'])
+        if pkg.name == pkg.package_base
     ]
 
     superfluous = set(_pkg2cat_str.keys())
@@ -243,21 +245,56 @@ def import_from_path(path: Path, name: Optional[str] = None) -> ModuleType:
     return mod
 
 
+re_pkg_url = re.compile(r'https://(files|pypi).python(hosted)?.org/packages/[\w.]+/[a-z]/(?P<dist>[^/]+)/[^/]+')
+
+
+def get_python_version(pkg: Package):
+    p = pkg_path(pkg)
+    prefix = '\tsource = '
+    src_lines = [l[len(prefix):] for l in (p / '.SRCINFO').read_text().split('\n') if l.startswith(prefix)]
+    assert src_lines, f'no sources in {pkg.name}'
+    versions = {}
+    for src_line in src_lines:
+        m = re_pkg_url.match(src_line)
+        if not m:
+            raise RuntimeError(f'Could not match source line {src_line!r}')
+        dist = m['dist']
+        try:
+            version = requests.get(f'https://pypi.org/pypi/{dist}/json').json()['info']['version']
+        except Exception:
+            warn(f'Error downloading/extracting version from {dist}')
+            raise
+        versions[dist] = version
+    if len(set(versions.values())) > 1:  # There’s auxiliary packages. Try getting the one matching the package name.
+        n = pkg.name.replace('python-', '')
+        v = versions.get(n, versions.get(pkg.name))
+        if v is not None:
+            versions = {pkg.name: v}
+        else:
+            raise RuntimeError(f'Multiple ambiguous versions found for {pkg.name}')
+    return next(iter(versions.values()))
+
+
 def get_versions(pkgs: Iterable[Package]) -> Generator[Tuple[Package, str], None, None]:
+    undetermined = set()
     for pkg in pkgs:
+        if pkg.package_base.endswith('-git') or pkg.name in blacklist:
+            continue
+        
         p = pkg_path(pkg)
         v = None
         if (p / 'version.py').is_file():
             v = import_from_path(p / 'version.py').version()
         elif pkg.category == 'Python':
-            pass # PIP lookup
+            v = get_python_version(pkg)
         elif pkg.category == 'JS':
             pass # Node lookup
         
-        if v is None:
-            raise RuntimeError(f'Could not determine version of {pkg.package_base}')
+        if v is None: undetermined.add(pkg.package_base)
         
-        yield pkg, v
+        #yield pkg, v
+    if undetermined:
+        raise RuntimeError(f'Could not determine version of {undetermined}')
 
 
 expire = timedelta(minutes=20)
