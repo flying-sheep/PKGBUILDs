@@ -296,8 +296,9 @@ def get_versions(pkgs: Iterable[Package]) -> Generator[Tuple[Package, str], None
             undetermined.add(pkg.package_base)
             continue
         
-        if version.parse(v) > version.parse(pkg.version):
-            print(f'Newer version available for {pkg.name}: {v} > {pkg.version}')
+        pkg_ver, _pkg_rel = pkg.version.split('-')
+        if version.parse(v) > version.parse(pkg_ver):
+            print(f'Newer version available for {pkg.name}: {v} > {pkg_ver}')
     if undetermined:
         raise RuntimeError(f'Could not determine version of {undetermined}')
 
