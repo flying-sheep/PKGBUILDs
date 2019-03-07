@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from __future__ import annotations
+
 import re
 import sys
 import json
@@ -7,7 +9,11 @@ import asyncio
 from itertools import islice
 from datetime import timedelta, datetime
 from pathlib import Path
-from typing import Any, Union, Optional, NamedTuple
+from warnings import warn
+from types import ModuleType
+from typing import TypeVar, Union, Any, Optional, get_type_hints
+from typing import Iterable, Generator, Awaitable
+from typing import NamedTuple, List, Tuple
 
 import requests
 import requests_cache
@@ -102,11 +108,11 @@ class Package(NamedTuple):
     url_path: Path
     
     @property
-    def category(self):
+    def category(self) -> str:
         return pkg2cat(self.name)
     
     @classmethod
-    def from_json(cls, data: dict):
+    def from_json(cls, data: dict) -> Package:
         def camel_to_snake(camel: str) -> str:
             first_converted = re.sub(r'(.)([A-Z][a-z]+)', r'\1_\2', camel)
             return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', first_converted).lower()
@@ -125,18 +131,19 @@ class Package(NamedTuple):
             try:
                 return typ(value)
             except Exception:
-                print(f'Error trying to convert {value!r} to {typ}:', file=sys.stderr)
+                warn(f'Error trying to convert {value!r} to {typ}:')
                 raise
         
         kv = {}
+        types = get_type_hints(cls)
         for k_camel, v_raw in data.items():
             k = camel_to_snake(k_camel)
-            v = typeconv(v_raw, cls._field_types[k])
+            v = typeconv(v_raw, types[k])
             kv[k] = v
         return cls(**kv)
 
 
-def get_pkgs():
+def get_pkgs() -> List[Package]:
     search = requests.get('https://aur.archlinux.org/rpc/?v=5&type=search&by=maintainer&arg=flying-sheep').json()
     pkgs = [
         pkg_info
@@ -150,13 +157,16 @@ def get_pkgs():
         name = pkg_info.name
         if not pkg_info.category: nocat.add(name)
         superfluous -= {name}
-    if superfluous: print('Superfluous packages:', superfluous, file=sys.stderr)
+    if superfluous: warn(f'Superfluous packages: {superfluous}')
     if nocat:
         raise RuntimeError(f'No category for: {nocat}')
     return pkgs
 
 
-def limited_as_completed(coros, limit: int):
+T = TypeVar('T')
+
+
+def limited_as_completed(coros: Iterable[Awaitable[T]], limit: int) -> Generator[Awaitable[T]]:
     futures = [
         asyncio.ensure_future(c)
         for c in islice(coros, 0, limit)
@@ -197,29 +207,33 @@ async def clone_or_pull(path: Path, repo: str, *, expire_after: timedelta):
         rc = proc.returncode
     else:
         rc, stdout, stderr = 0, b'', b''
-    if rc == 0:
+    if rc == 0 and path.is_dir():
         path.touch()
     return path, rc, stdout, stderr
 
 
-def pkg_path(pkg):
+def pkg_path(pkg: Package) -> Path:
     return Path(f'checkouts/{pkg.category}/{pkg.package_base}')
 
 
-def pkg_url(pkg):
+def pkg_url(pkg: Package) -> str:
     return f'ssh://aur@aur.archlinux.org/{pkg.package_base}.git'
 
 
-async def sync_submodules(pkgs, *, expire_after: timedelta):
+async def sync_submodules(pkgs: Iterable[Package], *, expire_after: timedelta):
     coros = [clone_or_pull(pkg_path(pkg), pkg_url(pkg), expire_after=expire_after) for pkg in pkgs]
     for f in limited_as_completed(iter(coros), 4):
         path, rc, stdout, stderr = await f
         if rc != 0:
             if stdout: print(f'{path} errored ({rc}): {stdout.decode("utf-8").strip()}')
             if stderr: print(f'{path} errored ({rc}): {stderr.decode("utf-8").strip()}', file=sys.stderr)
+    
+    not_yours = {d.name for d in Path('checkouts').glob('*/*')} - {p.package_base for p in pkgs}
+    if not_yours:
+        warn(f'You do no longer maintain the package(s) {sorted(not_yours)}')
 
 
-def import_from_path(path: Path, name: Optional[str] = None):
+def import_from_path(path: Path, name: Optional[str] = None) -> ModuleType:
     if name is None:
         name = path.with_suffix('').name
     import importlib.util
@@ -229,7 +243,7 @@ def import_from_path(path: Path, name: Optional[str] = None):
     return mod
 
 
-def get_versions(pkgs):
+def get_versions(pkgs: Iterable[Package]) -> Generator[Tuple[Package, str], None, None]:
     for pkg in pkgs:
         p = pkg_path(pkg)
         v = None
@@ -242,6 +256,8 @@ def get_versions(pkgs):
         
         if v is None:
             raise RuntimeError(f'Could not determine version of {pkg.package_base}')
+        
+        yield pkg, v
 
 
 expire = timedelta(minutes=20)
