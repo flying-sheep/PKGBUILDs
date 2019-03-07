@@ -17,6 +17,8 @@ from typing import NamedTuple, List, Tuple
 
 import requests
 import requests_cache
+from packaging import version
+
 
 blacklist = {
     'python-tbvaccine',  # https://github.com/pypa/warehouse/issues/5535
@@ -290,9 +292,12 @@ def get_versions(pkgs: Iterable[Package]) -> Generator[Tuple[Package, str], None
         elif pkg.category == 'JS':
             pass # Node lookup
         
-        if v is None: undetermined.add(pkg.package_base)
+        if v is None:
+            undetermined.add(pkg.package_base)
+            continue
         
-        #yield pkg, v
+        if version.parse(v) > version.parse(pkg.version):
+            print(f'Newer version available for {pkg.name}: {v} > {pkg.version}')
     if undetermined:
         raise RuntimeError(f'Could not determine version of {undetermined}')
 
