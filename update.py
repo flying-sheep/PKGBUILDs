@@ -6,6 +6,8 @@ import re
 import sys
 import json
 import asyncio
+from zipfile import ZipFile
+from configparser import ConfigParser
 from itertools import islice
 from datetime import timedelta, datetime
 from pathlib import Path
@@ -13,7 +15,7 @@ from warnings import warn
 from types import ModuleType
 from typing import TypeVar, Union, Any, Optional, get_type_hints
 from typing import Iterable, Generator, Awaitable
-from typing import NamedTuple, List, Tuple
+from typing import NamedTuple, Tuple, List, Dict
 
 import requests
 import requests_cache
@@ -247,6 +249,35 @@ def import_from_path(path: Path, name: Optional[str] = None) -> ModuleType:
     return mod
 
 
+def get_scripts(whl: Path) -> Dict[str, str]:
+    if whl is None:
+        return {}
+    with ZipFile(whl) as archive:
+        n = next(iter(n for n in archive.namelist() if n.endswith('.dist-info/entry_points.txt')), None)
+        if n is None:
+            return {}
+        ini = archive.read(n).decode('utf-8')
+    parser = ConfigParser()
+    parser.optionxform = str
+    parser.read_string(ini)
+    return dict(parser['console_scripts']) if 'console_scripts' in ini else {}
+
+
+def check_python_package(pkg: Package):
+    p = pkg_path(pkg)
+    pkgbuild = (p / 'PKGBUILD').read_text()
+    
+    # TODO: get from sources array
+    scripts = get_scripts(next(iter(p.glob('*.whl')), None))
+    if scripts:
+        uninstalled = {s: v for s, v in scripts.items() if not f'/bin/{s}' in pkgbuild}
+        if uninstalled:
+            warn(f'Package {pkg.name} does not install scripts {uninstalled}', stacklevel=2)
+    
+    if re.search(r'^makedepends=.*python-pip', pkgbuild, re.MULTILINE):
+        warn(f'Package {pkg.name} contains pip as makedepends', stacklevel=2)
+
+
 re_pkg_url = re.compile(r'https://(files|pypi).python(hosted)?.org/packages/[\w.]+/[a-z]/(?P<dist>[^/]+)/[^/]+')
 
 
@@ -288,6 +319,7 @@ def get_versions(pkgs: Iterable[Package]) -> Generator[Tuple[Package, str], None
         if (p / 'version.py').is_file():
             v = import_from_path(p / 'version.py').version()
         elif pkg.category == 'Python':
+            check_python_package(pkg)
             v = get_python_version(pkg)
         elif pkg.category == 'JS':
             pass # Node lookup
