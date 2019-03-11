@@ -6,8 +6,6 @@ import re
 import sys
 import json
 import asyncio
-from zipfile import ZipFile
-from configparser import ConfigParser
 from itertools import islice
 from datetime import timedelta, datetime
 from pathlib import Path
@@ -20,6 +18,7 @@ from typing import NamedTuple, Tuple, List, Dict
 import requests
 import requests_cache
 from packaging import version
+from wheel_inspect import inspect_wheel
 
 
 blacklist = {
@@ -249,18 +248,12 @@ def import_from_path(path: Path, name: Optional[str] = None) -> ModuleType:
     return mod
 
 
-def get_scripts(whl: Path) -> Dict[str, str]:
+def get_scripts(whl: Path) -> Dict[str, Dict[str, Union[str, List[str]]]]:
     if whl is None:
         return {}
-    with ZipFile(whl) as archive:
-        n = next(iter(n for n in archive.namelist() if n.endswith('.dist-info/entry_points.txt')), None)
-        if n is None:
-            return {}
-        ini = archive.read(n).decode('utf-8')
-    parser = ConfigParser()
-    parser.optionxform = str
-    parser.read_string(ini)
-    return dict(parser['console_scripts']) if 'console_scripts' in ini else {}
+    entry_points = inspect_wheel(whl)['dist_info'].get('entry_points')
+    # e.g.: {'flit': {'module': 'flit', 'attr': 'main', 'extras': []}}
+    return entry_points['console_scripts'] if entry_points else {}
 
 
 def check_python_package(pkg: Package):
