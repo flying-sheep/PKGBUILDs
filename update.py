@@ -75,7 +75,13 @@ categories = {
         'scanpy',
         'scanpy-git',
     },
-    'Rust': {'diesel_cli', 'resvg', 'resvg-cairo', 'resvg-qt'},
+    'Rust': {
+        lambda x: x.startswith('cargo-'),
+        'diesel_cli',
+        'resvg',
+        'resvg-cairo',
+        'resvg-qt',
+    },
 }
 _pkg2cat_str = {
     p: c
