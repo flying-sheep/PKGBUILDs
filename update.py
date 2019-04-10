@@ -288,6 +288,8 @@ def get_python_version(pkg: Package):
     assert src_lines, f'no sources in {pkg.name}'
     versions = {}
     for src_line in src_lines:
+        if 'https://' not in src_line:
+            continue
         m = re_pkg_url.match(src_line)
         if not m:
             raise RuntimeError(f'Could not match source line {src_line!r}')
@@ -305,7 +307,7 @@ def get_python_version(pkg: Package):
             versions = {pkg.name: v}
         else:
             raise RuntimeError(f'Multiple ambiguous versions found for {pkg.name}')
-    return next(iter(versions.values()))
+    return next(iter(versions.values()), None)
 
 
 def get_versions(pkgs: Iterable[Package]) -> Generator[Tuple[Package, str], None, None]:
