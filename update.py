@@ -71,6 +71,7 @@ categories = {
         'auditwheel',
         'flit',
         'flit-git',
+        'install-wheel-scripts',
         'snakemake',
         'scanpy',
         'scanpy-git',
@@ -259,7 +260,7 @@ def get_scripts(whl: Path) -> Dict[str, Dict[str, Union[str, List[str]]]]:
         return {}
     entry_points = inspect_wheel(whl)['dist_info'].get('entry_points')
     # e.g.: {'flit': {'module': 'flit', 'attr': 'main', 'extras': []}}
-    return entry_points['console_scripts'] if entry_points else {}
+    return entry_points.get('console_scripts', {}) if entry_points else {}
 
 
 def check_python_package(pkg: Package):
