@@ -30,11 +30,13 @@ categories = {
         'hisat2',
         'kallisto',
         'ftree',
+        'dindent',
     },
     'KDE': {
         'desktop-privileges',
         'desktop-privileges-nogroups',
         'kcm-pointing-devices-git',
+        'kwin-scripts-forceblur',
     },
     'Fonts': {
         'otf-texgyre-pagella-math',
@@ -43,7 +45,7 @@ categories = {
     'GUI': {
         'unicodemoticon',
         'terrafirma',
-        'rambox',
+        'freedesktop-templates-libreoffice',
     },
     'Devtools': {
         'qt-inspector-qt5-git',
@@ -75,6 +77,8 @@ categories = {
         'snakemake',
         'scanpy',
         'scanpy-git',
+        'scanpy-scripts',
+        'sphobjinv',
     },
     'Rust': {
         lambda x: x.startswith('cargo-'),
