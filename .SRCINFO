@@ -1,6 +1,6 @@
 pkgbase = python-qtconsole-git
 	pkgdesc = Qt-based console for Jupyter with support for rich media output
-	pkgver = 4.4.0.dev.1375.878e1b3
+	pkgver = 4.8.0.dev0.1683.efa3302
 	pkgrel = 1
 	url = https://pypi.python.org/pypi/qtconsole
 	arch = any

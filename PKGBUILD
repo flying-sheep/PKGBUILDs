@@ -2,20 +2,31 @@
 # Contributor: Kyle Keen <keenerd@gmail.com>
 
 pkgname=python-qtconsole-git
-pkgver=4.8.0.dev0.1683.efa3302
+pkgver=5.1.0.dev0.1730.cf34d5a
 pkgrel=1
 pkgdesc='Qt-based console for Jupyter with support for rich media output'
 arch=(any)
 url='https://pypi.python.org/pypi/qtconsole'
 license=(BSD)
 depends=(
-	python-ipykernel python-jupyter_core python-jupyter_client
-	python-traitlets python-pygments python-pyzmq
-	qt5-svg python-pyqt5 python-sip)
+	python-traitlets
+	python-jupyter-core
+	python-jupyter-client
+	python-pygments
+	python-ipykernel
+	python-qtpy
+	python-pyzmq
+	python-packaging
+	sip
+)
+optdepends=(
+	'qt5-svg: Use with Qt5'
+	'qt6-svg: Use with Qt6'
+)
 conflicts=(python-qtconsole)
 provides=(python-qtconsole)
 makedepends=(python-setuptools)
-source=("git://github.com/jupyter/qtconsole.git")
+source=("git+https://github.com/jupyter/qtconsole.git")
 md5sums=(SKIP)
 
 pkgver() {
@@ -26,9 +37,16 @@ pkgver() {
 		"$(git rev-parse --short HEAD)"
 }
 
+build() {
+	cd "$srcdir/qtconsole"
+	python -m build --wheel --no-isolation
+	# remove duplicate entrypoint script
+	zip dist/*.whl -d "$(bsdtar tf dist/*.whl | grep /scripts/jupyter-qtconsole)"
+}
+
 package() {
 	cd "$srcdir/qtconsole"
-	python setup.py install --prefix=/usr --root="$pkgdir" --optimize=0
+	python -m installer --destdir="$pkgdir" dist/*.whl
 	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 	
 	cd examples
