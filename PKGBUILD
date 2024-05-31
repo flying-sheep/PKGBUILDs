@@ -1,7 +1,7 @@
 _name=pyjnius
 pkgname=python-$_name
-pkgver=1.4.2
-pkgrel=2
+pkgver=1.6.1
+pkgrel=1
 pkgdesc='Python module to access Java class as Python class, using JNI.'
 arch=(any)
 url="https://github.com/kivy/$_name"
@@ -9,7 +9,7 @@ license=(MIT)
 depends=(python java-environment python-six)
 makedepends=(cython python-setuptools python-build python-installer python-wheel)
 source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
-sha256sums=('fc0637cda4ae128ec4a96ac327d352e87ea866764b01d962672870be539a9dae')
+sha256sums=('d2a7ece6ed79bf1d7f97a4f6d61302d9f1d7652182a3e4c8a69dbaef31396e60')
 
 build() {
 	cd "$_name-$pkgver"
