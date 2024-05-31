@@ -27,7 +27,7 @@ conflicts=(python-qtconsole)
 provides=(python-qtconsole)
 makedepends=(python-setuptools)
 source=("git+https://github.com/jupyter/qtconsole.git")
-md5sums=(SKIP)
+md5sums=('SKIP')
 
 pkgver() {
 	cd "$srcdir/qtconsole"
