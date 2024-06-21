@@ -2,16 +2,16 @@
 
 _name=anndata
 pkgname=python-$_name
-pkgver=0.9.1
+pkgver=0.10.8
 pkgrel=1
 pkgdesc='A data structure for rectangular numeric data and sample/variable annotations.'
 arch=(any)
 url="https://github.com/theislab/$_name"
 license=(BSD)
-depends=(python-pandas python-scipy python-h5py python-natsort python-packaging)
-makedepends=(python-flit-core python-setuptools-scm python-build python-installer python-wheel)
+depends=(python-pandas python-scipy python-h5py python-natsort python-packaging python-array-api-compat)
+makedepends=(python-hatch-vcs python-setuptools-scm python-build python-installer python-wheel)
 source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
-sha256sums=('1f28f2c427e67b0b99bdd2b281717c92a12660dfd23e0694939b6e733f0eb2c4')
+sha256sums=('b728a33225eeaaefddf6bed546d935c0f06881c9166621b24de3b492b2f406bb')
 
 build() {
 	cd "$_name-$pkgver"
