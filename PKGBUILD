@@ -1,32 +1,34 @@
 # Maintainer: Philipp A. <flying-sheep@web.de>
 
 pkgname=scanpy
-pkgver=1.9.6
-pkgrel=2
+pkgver=1.10.2
+pkgrel=1
 pkgdesc='Single-Cell Analysis in Python'
 arch=(any)
 provides=(scanpy python-scanpy)
 url='https://github.com/theislab/scanpy'
 license=(BSD)
 depends=(
-	'python-anndata>=0.7.4'
-	'python-numpy>=1.17.0'
-	'python-matplotlib>=3.4'
-	'python-pandas>=1.1.1'
-	'python-scipy>=1.4'
-	python-seaborn
-	python-h5py
+	'python-anndata>=0.8'
+	'python-numpy>=1.23'
+	'python-matplotlib>=3.6'
+	'python-pandas>=1.5'
+	'python-scipy>=1.8'
+	'python-seaborn>=0.13'
+	'python-h5py>=3.1'
 	python-tqdm
 	'python-scikit-learn>=0.24'
-	'python-statsmodels>=0.10.0'
+	'python-statsmodels>=0.13'
 	python-patsy
-	'python-networkx>=2.3'
+	'python-networkx>=2.7'
 	python-natsort
 	python-joblib
-	'python-numba>=0.41.0'
-	'python-umap-learn>=0.3.10'
-	python-packaging
+	'python-numba>=0.56'
+	'python-umap-learn>=0.5.1'
+	'python-pynndescent>=0.5.13'
+	'python-packaging>=21.3'
 	python-session-info
+	'python-legacy-api-wrap>=1.4'
 )
 optdepends=(
 	'python-igraph: PAGA support (also transitively needed for Louvain/Leiden)'
@@ -38,7 +40,7 @@ optdepends=(
 	'python-skmisc: For seurat_v3 highly_variable_genes method'
 	'python-harmonypy: Harmony dataset integration algorithm'
 	'python-scanorama: Scanorama dataset integration algorithm'
-	'python-scrublet: Cell doublet detection'
+	'python-scikit-image: Cell doublet detection with scrublet'
 	'rapids-cudf: NVIDIA RAPIDS acceleration'
 	'rapids-cuml: NVIDIA RAPIDS acceleration'
 	'rapids-cugraph: NVIDIA RAPIDS acceleration'
@@ -46,7 +48,7 @@ optdepends=(
 )
 makedepends=(python-hatch python-hatch-vcs python-build python-installer python-wheel)
 source=("https://files.pythonhosted.org/packages/source/${pkgname::1}/$pkgname/$pkgname-$pkgver.tar.gz")
-sha256sums=('b2f24e6f220cb9d4d893b24f6899ba1a14cf2fef50b7e05bb37980c78de8a013')
+sha256sums=('5d1649e73ac35e3ad02b455d8a16fdb16d4c8dc27330e696f4cd4e27f2d879be')
 
 build() {
 	cd "$pkgname-$pkgver"
