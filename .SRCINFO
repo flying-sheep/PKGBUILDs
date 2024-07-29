@@ -1,16 +1,18 @@
 pkgbase = python-legacy-api-wrap
 	pkgdesc = Legacy API wrapper.
-	pkgver = 1.2
-	pkgrel = 3
+	pkgver = 1.4
+	pkgrel = 1
 	url = https://github.com/flying-sheep/legacy-api-wrap
 	arch = any
-	license = GPL3
-	makedepends = python-setuptools
+	license = GPL-3.0-or-later
+	makedepends = python-hatch-vcs
+	makedepends = python-hatch-docstring-description
 	makedepends = python-build
 	makedepends = python-installer
 	makedepends = python-wheel
-	depends = python-get_version
-	source = https://files.pythonhosted.org/packages/source/l/legacy-api-wrap/legacy-api-wrap-1.2.tar.gz
-	sha256sums = 034a44612da7e9943d3964363a98937ab54d55e3301075374abe0d521eb8101b
+	depends = python
+	optdepends = pytest: testing.legacy_api_wrap.pytest package
+	source = https://files.pythonhosted.org/packages/source/l/legacy-api-wrap/legacy_api_wrap-1.4.tar.gz
+	sha256sums = 92dfa274cedb26d6e6f70fac85c856fbdcc05058066656d76a665fb4bf11b785
 
 pkgname = python-legacy-api-wrap
