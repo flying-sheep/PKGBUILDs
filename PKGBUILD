@@ -1,7 +1,7 @@
 _name=mizani
 pkgname=python-$_name
-pkgver=0.10.0
-pkgrel=2
+pkgver=0.12.2
+pkgrel=1
 pkgdesc='Scales for python'
 arch=(any)
 url="https://github.com/has2k1/$_name"
@@ -24,7 +24,7 @@ checkdepends=(
 	python-pytest-cov
 )
 source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_name-$pkgver.tar.gz")
-sha256sums=('4063e16cb7ce932e88d7bb9ac6552d3a0bf86eda2f92d3aee13777448cd580b7')
+sha256sums=('b44ab57a57794c6fdabcc2c423860fa042c7e6410f073c9b2959e0e768e0b7a8')
 
 build() {
 	cd "$_name-$pkgver"
@@ -33,7 +33,7 @@ build() {
 
 check() {
 	cd "$_name-$pkgver"
-	PYTHONPATH=. pytest --color=yes
+	PYTHONPATH=. pytest --color=yes -v
 }
 
 package() {
