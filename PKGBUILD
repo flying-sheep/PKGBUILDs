@@ -3,7 +3,7 @@
 _name=cmake
 pkgname=python-$_name-bin
 pkgver=3.30.3
-pkgrel=1
+pkgrel=2
 pkgdesc='Infrastructure for building CMake Python wheels'
 arch=(x86_64 aarch64)
 url="https://github.com/cikit-build/$_name"
@@ -11,7 +11,7 @@ options=(!strip)
 license=(Apache-2.0)
 depends=(python)
 makedepends=(python-installer)
-provides=("${pkgname%-bin}")
+provides=("${pkgname%-bin}=$pkgver")
 conflicts=("${pkgname%-bin}")
 source_x86_64=("https://files.pythonhosted.org/packages/py3/${_name::1}/$_name/$_name-$pkgver-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl")
 source_aarch64=("https://files.pythonhosted.org/packages/py3/${_name::1}/$_name/$_name-$pkgver-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl")
