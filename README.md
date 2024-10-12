@@ -1,0 +1,2 @@
+- https://archlinux.org/packages/extra/any/nvchecker/
+- https://archlinux.org/packages/extra/any/aurpublish/
