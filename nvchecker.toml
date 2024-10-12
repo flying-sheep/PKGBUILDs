@@ -1,0 +1,11 @@
+[__config__]
+oldver = "versions.json"
+newver = "versions-new.json"
+
+[python-anndata]
+source = "pypi"
+pypi = "anndata"
+
+[python-get_version]
+source = "pypi"
+pypi = "get-version"
