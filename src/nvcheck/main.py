@@ -30,7 +30,7 @@ def get_parser() -> ArgumentParser:
         type=Path,
         default=fields_["dir"].default_factory(),
         nargs="?",
-        help="directory containing nvchecker.toml",
+        help="directory containing `nvchecker.toml` and `pkgs/` subdirectory",
     )
 
     return parser
@@ -42,7 +42,8 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
     # setup logging
     nvchecker.core.process_common_arguments(NVCheckerArgs())
 
-    oldvers = read_vers(args.dir / "pkgs")
+    pkgs_dir = args.dir / "pkgs"
+    oldvers = read_vers(pkgs_dir)
 
     try:
         newvers, has_failures = run_nvchecker(
@@ -60,4 +61,4 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != (oldver := oldvers[name])
     }
 
-    update_pkgbuilds(updated)
+    update_pkgbuilds(updated, pkgs_dir)
