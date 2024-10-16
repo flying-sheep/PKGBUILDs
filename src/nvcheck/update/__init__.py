@@ -5,6 +5,7 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from gidgethub.httpx import GitHubAPI
 from httpx import AsyncClient
 
 from . import pypi
@@ -33,15 +34,21 @@ class Updater:
     repo_dir: Path
     pkgs_dir: Path
     http_client: AsyncClient = field(default_factory=lambda: AsyncClient(http2=True))
+    gh_client: GitHubAPI = field(default=None)  # type: ignore
+
+    def __post_init__(self):
+        if self.gh_client is None:
+            self.gh_client = GitHubAPI(self.http_client, "flying-sheep/pkgbuilds")
 
     async def update(self, name: str, oldver: str, new: RichResult) -> None:
+        # TODO: do concurrently
         msg = await self.msg_update(name, oldver, new)
-        print(msg)
+        await self.upsert_pr(name, oldver, new, msg)
 
-    async def msg_update(self, name, oldver, new):
+    async def msg_update(self, name: str, oldver: str, new: RichResult) -> str:
         match new.url:
             case str() if (match := re.fullmatch(pypi.URL_PAT, new.url)):
-                msg = await pypi.msg_update(
+                return await pypi.msg_update(
                     self.http_client, match["name"], (oldver, match["version"])
                 )
             case None:
@@ -50,4 +57,11 @@ class Updater:
             case _:
                 msg = f"unknown URL pattern for {name}: {new.url}"
                 raise RuntimeError(msg)
-        return msg
+
+    async def upsert_pr(
+        self, name: str, oldver: str, new: RichResult, msg: str
+    ) -> None:
+        async for x in self.gh_client.getiter(
+            f"/repos/{self.repo_dir.name}/pulls",
+        ):
+            pass
