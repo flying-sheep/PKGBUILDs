@@ -55,4 +55,4 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != old_vers[name]
     }
 
-    run(update_pkgbuilds(updated, pkgs_dir))
+    run(update_pkgbuilds(updated, repo_dir=args.dir, pkgs_dir=pkgs_dir))
