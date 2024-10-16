@@ -6,10 +6,7 @@ from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import nvchecker.core
-from nvchecker.util import RichResult
-
-from .nvchecker import NVCheckerArgs, run_nvchecker
+from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
 from .update import update_pkgbuilds
 
@@ -40,18 +37,14 @@ def get_parser() -> ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int | str | None:
     args = get_parser().parse_args(argv, Args())
 
-    # setup logging
-    nvchecker.core.process_common_arguments(NVCheckerArgs())
+    setup_logging()
 
     pkgs_dir = args.dir / "pkgs"
     oldvers = read_vers(pkgs_dir)
 
     try:
-        newvers, has_failures = run_nvchecker(
-            args.dir / "nvchecker.toml",
-            {n: RichResult(version=v) for n, v in oldvers.items()},
-        )
-    except nvchecker.core.FileLoadError as e:
+        newvers, has_failures = run_nvchecker(args.dir / "nvchecker.toml", oldvers)
+    except FileLoadError as e:
         return str(e)
     if has_failures:
         return "could not update versions"

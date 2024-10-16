@@ -11,6 +11,9 @@ authors = [{ name = "Philipp Angerer", email = "philipp.angerer@helmholtz-munich
 readme = "README.md"
 dependencies = [
     "nvchecker",
+    "srcinfo",
+    "httpx",
+    "packaging",
 ]
 dynamic = ["version"]
 
@@ -46,18 +49,6 @@ select = [
     "ICN", # Follow import conventions
     "PTH", # Pathlib instead of os.path
     "PT",  # Pytest conventions
-]
-ignore = [
-    # line too long -> we accept long comment lines; formatter gets rid of long code lines
-    "E501",
-    # Do not assign a lambda expression, use a def -> AnnData allows lambda expression assignments,
-    "E731",
-    # allow I, O, l as variable names -> I is the identity matrix, i, j, k, l is reasonable indexing notation
-    "E741",
-    # We use relative imports from parent modules
-    "TID252",
-    # Shadowing loop variables isn’t a big deal
-    "PLW2901",
 ]
 [tool.ruff.lint.isort]
 known-first-party = ["nvcheck"]

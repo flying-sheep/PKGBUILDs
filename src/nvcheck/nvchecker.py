@@ -6,15 +6,19 @@ from typing import TYPE_CHECKING
 from warnings import warn
 
 import nvchecker.core
+from nvchecker.core import FileLoadError
 from nvchecker.ctxvars import proxy as ctx_proxy
-from nvchecker.util import EntryWaiter
+from nvchecker.util import EntryWaiter, RichResult
 
 if TYPE_CHECKING:
-    from collections.abc import Coroutine
+    from collections.abc import Coroutine, Mapping
     from pathlib import Path
     from typing import IO, Literal
 
     from nvchecker.util import RawResult, ResultData
+
+
+__all__ = ["NVCheckerArgs", "FileLoadError", "setup_logging", "run_nvchecker"]
 
 
 class NVCheckerArgs(Namespace):
@@ -24,7 +28,20 @@ class NVCheckerArgs(Namespace):
     json_log_fd: IO[str] | None = None
 
 
-def run_nvchecker(cfg_file: Path, oldvers: ResultData) -> tuple[ResultData, bool]:
+def setup_logging() -> None:
+    nvchecker.core.process_common_arguments(NVCheckerArgs())
+
+
+def run_nvchecker(
+    cfg_file: Path, oldvers: Mapping[str, str]
+) -> tuple[ResultData, bool]:
+    """Run nvchecker and return a tuple of (result, has_failures).
+
+    Raises
+    ------
+    FileLoadError
+        if the config file is not valid
+    """
     entries, options = nvchecker.core.load_file(str(cfg_file), use_keymanager=False)
 
     if options.ver_files is not None:
@@ -52,8 +69,9 @@ def run_nvchecker(cfg_file: Path, oldvers: ResultData) -> tuple[ResultData, bool
         source_configs=options.source_configs,
     )
 
+    oldvers_rich = {n: RichResult(version=v) for n, v in oldvers.items()}
     result_coro = nvchecker.core.process_result(
-        oldvers, result_q, entry_waiter, verbose=False
+        oldvers_rich, result_q, entry_waiter, verbose=False
     )
     runner_coro = nvchecker.core.run_tasks(futures)
 
