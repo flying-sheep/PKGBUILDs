@@ -50,6 +50,9 @@ select = [
     "PTH", # Pathlib instead of os.path
     "PT",  # Pytest conventions
 ]
+ignore = [
+    "TID252", # dot imports from parents are useful
+]
 [tool.ruff.lint.isort]
 known-first-party = ["nvcheck"]
 required-imports = ["from __future__ import annotations"]
