@@ -2,8 +2,10 @@ from __future__ import annotations
 
 from argparse import Namespace
 import asyncio
-import json
+from collections.abc import Mapping
+from dataclasses import dataclass
 from pathlib import Path
+import re
 from typing import TYPE_CHECKING, cast
 from warnings import warn
 
@@ -24,17 +26,17 @@ class NVCheckerArgs(Namespace):
     json_log_fd: IO[str] | None = None
 
 
-def read_vers(dir: Path | None = None) -> ResultData:
+def read_vers(dir: Path | None = None) -> dict[str, str]:
     if dir is None:
         dir = Path()
-    vers: ResultData = {}
+    vers: dict[str, str] = {}
     for d in dir.iterdir():
         if d.name.startswith(".") or not d.is_dir():
             continue
         srcinfo, errors = parse_srcinfo((d / ".SRCINFO").read_text())
         if errors:
             raise RuntimeError(f"Error parsing {d}:\n{errors}")
-        vers[d.name] = RichResult(version=cast(str, srcinfo["pkgver"]))
+        vers[d.name] = cast(str, srcinfo["pkgver"])
     return vers
 
 
@@ -85,26 +87,51 @@ async def run(
     return await result_fu
 
 
-def main() -> int | str:
+PYPI_PAT = re.compile(r"https://pypi.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")
+
+
+def update_pkgbuilds(updated: Mapping[str, tuple[str, RichResult]]) -> None:
+    for name, (oldver, new) in updated.items():
+        match new.url:
+            case str() if (match := re.fullmatch(PYPI_PAT, new.url)):
+                update_pypi(name, match["name"], (oldver, match["version"]))
+            case None:
+                msg = f"no url for {name}"
+                raise RuntimeError(msg)
+            case _:
+                msg = f"unknown URL pattern for {name}: {new.url}"
+                raise RuntimeError(msg)
+
+
+def update_pypi(arch_name: str, pypi_name: str, versions: tuple[str, str]) -> None:
+    print("PyPI update:", arch_name, pypi_name, versions[0], "→", versions[1])
+
+
+def main() -> int | str | None:
     here = Path()
-    oldvers = read_vers(here)
 
     # setup logging
     nvchecker.core.process_common_arguments(NVCheckerArgs())
 
+    oldvers = read_vers(here)
+
     try:
-        newvers, has_failures = run_nvchecker(here / "nvchecker.toml", oldvers)
+        newvers, has_failures = run_nvchecker(
+            here / "nvchecker.toml",
+            {n: RichResult(version=v) for n, v in oldvers.items()},
+        )
     except nvchecker.core.FileLoadError as e:
         return str(e)
+    if has_failures:
+        return "could not update versions"
 
     updated = {
-        name: result
-        for name, result in newvers.items()
-        if result.version != oldvers[name].version
+        name: (oldver, new)
+        for name, new in newvers.items()
+        if new.version != (oldver := oldvers[name])
     }
-    print(json.dumps(updated, default=nvchecker.core.json_encode))
 
-    return 3 if has_failures else 0
+    update_pkgbuilds(updated)
 
 
 if __name__ == "__main__":
