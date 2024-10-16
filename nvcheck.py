@@ -97,7 +97,12 @@ def main() -> int | str:
     except nvchecker.core.FileLoadError as e:
         return str(e)
 
-    print(json.dumps(newvers, default=nvchecker.core.json_encode))
+    updated = {
+        name: result
+        for name, result in newvers.items()
+        if result.version != oldvers[name].version
+    }
+    print(json.dumps(updated, default=nvchecker.core.json_encode))
 
     return 3 if has_failures else 0
 
