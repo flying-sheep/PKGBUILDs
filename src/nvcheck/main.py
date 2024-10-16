@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from argparse import ArgumentParser, Namespace
+from asyncio import run
 from dataclasses import dataclass, field, fields
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -61,4 +62,4 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != (oldver := oldvers[name])
     }
 
-    update_pkgbuilds(updated, pkgs_dir)
+    run(update_pkgbuilds(updated, pkgs_dir))
