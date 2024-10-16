@@ -57,11 +57,11 @@ class Updater:
             }
         deps = {version: task.result() for version, task in tasks.items()}
 
-        msg = f"""\
-        PyPI update: {self.pkgs_dir / arch_name} {pypi_name} {versions[0]} → {versions[1]}
-        - {deps[versions[0]] - deps[versions[1]]}
-        + {deps[versions[1]] - deps[versions[0]]}
-        """
+        msg = f"PyPI update: {self.pkgs_dir / arch_name} {pypi_name} {versions[0]} → {versions[1]}"
+        if removed := deps[versions[0]] - deps[versions[1]]:
+            msg += f"\n- {removed}"
+        if added := deps[versions[1]] - deps[versions[0]]:
+            msg += f"\n+ {added}"
         print(dedent(msg))
 
     async def get_deps(self, pypi_name: str, version: str) -> KeysView[Requirement]:
