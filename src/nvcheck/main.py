@@ -16,7 +16,7 @@ def main() -> int | str | None:
     # setup logging
     nvchecker.core.process_common_arguments(NVCheckerArgs())
 
-    oldvers = read_vers(here)
+    oldvers = read_vers(here / "pkgs")
 
     try:
         newvers, has_failures = run_nvchecker(
