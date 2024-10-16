@@ -3,4 +3,4 @@
 /*/*.pkg.*
 /*/*.tar.gz
 
-/versions*.json
+__pycache__/
