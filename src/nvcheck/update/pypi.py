@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import re
 from collections.abc import KeysView
 from dataclasses import dataclass, field
 from operator import and_, sub
@@ -20,11 +21,16 @@ if TYPE_CHECKING:
     T = TypeVar("T")
 
 
-async def update_pypi(
+__all__ = ["URL_PAT", "msg_update"]
+
+URL_PAT = re.compile(r"https://pypi.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")
+
+
+async def msg_update(
     http_client: AsyncClient, pypi_name: str, versions: tuple[str, str]
-) -> None:
+) -> str:
     reqs = await get_all_reqs(http_client, pypi_name, versions)
-    print(PyPIDepChanges(pypi_name, reqs))
+    return str(PyPIDepChanges(pypi_name, reqs))
 
 
 async def get_all_reqs(

@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 from httpx import AsyncClient
 
-from .pypi import update_pypi
+from . import pypi
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -17,9 +17,6 @@ if TYPE_CHECKING:
     from nvchecker.util import RichResult
 
     T = TypeVar("T")
-
-
-PYPI_PAT = re.compile(r"https://pypi.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")
 
 
 async def update_pkgbuilds(
@@ -40,10 +37,11 @@ class Updater:
     async def update(self, name: str, oldver: str, new: RichResult) -> None:
         async with self.http_client:
             match new.url:
-                case str() if (match := re.fullmatch(PYPI_PAT, new.url)):
-                    await update_pypi(
+                case str() if (match := re.fullmatch(pypi.URL_PAT, new.url)):
+                    msg = await pypi.msg_update(
                         self.http_client, match["name"], (oldver, match["version"])
                     )
+                    print(msg)
                 case None:
                     msg = f"no url for {name}"
                     raise RuntimeError(msg)
