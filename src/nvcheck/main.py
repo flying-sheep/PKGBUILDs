@@ -50,9 +50,9 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         return "could not update versions"
 
     updated = {
-        name: (old_ver, new)
+        name: (old_vers[name], new)
         for name, new in new_vers.items()
-        if new.version != (old_ver := old_vers[name])
+        if new.version != old_vers[name]
     }
 
     run(update_pkgbuilds(updated, pkgs_dir))
