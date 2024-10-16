@@ -60,16 +60,20 @@ class Updater:
     async def update_pypi(
         self, arch_name: str, pypi_name: str, versions: tuple[str, str]
     ) -> None:
-        async with asyncio.TaskGroup() as tg:
-            tasks = {
-                version: tg.create_task(self.get_deps(pypi_name, version))
-                for version in versions
-            }
-        reqs = {version: task.result() for version, task in tasks.items()}
-
+        reqs = await self.get_all_reqs(pypi_name, versions)
         print(PyPIDepChanges(pypi_name, reqs))
 
-    async def get_deps(self, pypi_name: str, version: str) -> KeysView[Requirement]:
+    async def get_all_reqs(
+        self, pypi_name: str, versions: Iterable[str]
+    ) -> dict[str, KeysView[Requirement]]:
+        async with asyncio.TaskGroup() as tg:
+            tasks = {
+                version: tg.create_task(self.get_reqs(pypi_name, version))
+                for version in versions
+            }
+        return {version: task.result() for version, task in tasks.items()}
+
+    async def get_reqs(self, pypi_name: str, version: str) -> KeysView[Requirement]:
         url = f"https://pypi.org/pypi/{pypi_name}/{version}/json"
         resp = await self.http_client.get(url)
         return ordered_set(map(Requirement, resp.json()["info"]["requires_dist"]))
