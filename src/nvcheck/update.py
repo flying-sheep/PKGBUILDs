@@ -5,7 +5,6 @@ import re
 from collections.abc import KeysView
 from dataclasses import dataclass, field
 from operator import and_, sub
-from textwrap import dedent
 from typing import TYPE_CHECKING, cast, overload
 
 from httpx import AsyncClient
@@ -13,7 +12,7 @@ from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable, Mapping, Set
+    from collections.abc import Generator, Iterable, Mapping, Sequence, Set
     from pathlib import Path
     from typing import Literal, TypeVar
 
@@ -68,30 +67,46 @@ class Updater:
             }
         reqs = {version: task.result() for version, task in tasks.items()}
 
-        msg = (
-            f"PyPI update: {self.pkgs_dir / arch_name} {pypi_name} "
-            f"{versions[0]} → {versions[1]}"
-        )
-        bare_reqs = {
-            v: ordered_set(prune_reqs(reqs[v], extras=set(), remove_vers=True))
-            for v in reqs
-        }
-        if removed := sub(*bare_reqs.values()):
-            msg += f"\n- {removed}"
-        if added := sub(*reversed(bare_reqs.values())):
-            msg += f"\n+ {added}"
-        reqs_in_both = cast(KeysView[Requirement], and_(*bare_reqs.values()))
-        if changed := {
-            " -> ".join(str(find_req(req.name, reqs[v])) for v in versions)
-            for req in reqs_in_both
-        }:
-            msg += f"\n~ {changed}"
-        print(dedent(msg))
+        print(PyPIDepChanges(pypi_name, reqs))
 
     async def get_deps(self, pypi_name: str, version: str) -> KeysView[Requirement]:
         url = f"https://pypi.org/pypi/{pypi_name}/{version}/json"
         resp = await self.http_client.get(url)
         return ordered_set(map(Requirement, resp.json()["info"]["requires_dist"]))
+
+
+@dataclass
+class PyPIDepChanges:
+    pypi_name: str
+    reqs: Mapping[str, KeysView[Requirement]]
+
+    removed: KeysView[Requirement] = field(init=False)
+    added: KeysView[Requirement] = field(init=False)
+    changed: Sequence[tuple[Requirement, Requirement]] = field(init=False)
+
+    def __post_init__(self) -> None:
+        bare_reqs = {
+            v: ordered_set(prune_reqs(self.reqs[v], extras=set(), remove_vers=True))
+            for v in self.reqs
+        }
+        self.removed = sub(*bare_reqs.values())
+        self.added = sub(*reversed(bare_reqs.values()))
+        reqs_in_both = cast(KeysView[Requirement], and_(*bare_reqs.values()))
+        self.changed = [
+            tuple(find_req(req.name, reqs) for reqs in self.reqs.values())
+            for req in reqs_in_both
+        ]
+
+    def __str__(self) -> str:
+        v0, v1 = self.reqs.keys()
+        msg = f"PyPI update: {self.pypi_name} ({v0} -> {v1})"
+        if self.removed:
+            msg += f"\n- { {str(req) for req in self.removed} }"
+        if self.added:
+            msg += f"\n+ { {str(req) for req in self.added} }"
+        if self.changed:
+            msg += f"\n~ { {f"{v0} -> {v1}" for v0, v1 in self.changed} }"
+        return msg
 
 
 @overload
