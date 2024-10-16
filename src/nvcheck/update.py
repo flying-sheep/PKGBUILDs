@@ -128,7 +128,6 @@ def prune_reqs(
     """
     for req in reqs:
         req = Requirement(str(req))  # noqa: PLW2901
-        print(req, req.marker)
         if (
             extras is not None
             and req.marker
