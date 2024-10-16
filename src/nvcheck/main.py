@@ -40,19 +40,19 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
     setup_logging()
 
     pkgs_dir = args.dir / "pkgs"
-    oldvers = read_vers(pkgs_dir)
+    old_vers = read_vers(pkgs_dir)
 
     try:
-        newvers, has_failures = run_nvchecker(args.dir / "nvchecker.toml", oldvers)
+        new_vers, has_failures = run_nvchecker(args.dir / "nvchecker.toml", old_vers)
     except FileLoadError as e:
         return str(e)
     if has_failures:
         return "could not update versions"
 
     updated = {
-        name: (oldver, new)
-        for name, new in newvers.items()
-        if new.version != (oldver := oldvers[name])
+        name: (old_ver, new)
+        for name, new in new_vers.items()
+        if new.version != (old_ver := old_vers[name])
     }
 
     run(update_pkgbuilds(updated, pkgs_dir))
