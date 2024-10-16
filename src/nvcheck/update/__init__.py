@@ -41,10 +41,10 @@ class Updater:
                     msg = await pypi.msg_update(
                         self.http_client, match["name"], (oldver, match["version"])
                     )
-                    print(msg)
                 case None:
                     msg = f"no url for {name}"
                     raise RuntimeError(msg)
                 case _:
                     msg = f"unknown URL pattern for {name}: {new.url}"
                     raise RuntimeError(msg)
+            print(msg)

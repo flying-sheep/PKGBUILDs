@@ -10,10 +10,11 @@ license = "MIT"
 authors = [{ name = "Philipp Angerer", email = "philipp.angerer@helmholtz-munich.de" }]
 readme = "README.md"
 dependencies = [
-    "nvchecker",
+    "nvchecker[pypi]",
     "srcinfo",
-    "httpx",
+    "httpx[http2,brotli,zstd]",
     "packaging",
+    "gidgethub",
 ]
 dynamic = ["version"]
 

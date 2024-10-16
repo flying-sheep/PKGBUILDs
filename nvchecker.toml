@@ -1,3 +1,6 @@
+[__config__]
+httplib = "httpx"
+
 [python-anndata]
 source = "pypi"
 pypi = "anndata"
