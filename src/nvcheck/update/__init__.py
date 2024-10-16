@@ -5,16 +5,17 @@ import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from gidgethub.httpx import GitHubAPI
+from githubkit import GitHub
 from httpx import AsyncClient
 
 from . import pypi
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Mapping, MutableSequence
     from pathlib import Path
     from typing import TypeVar
 
+    from githubkit.rest import PullRequestSimple
     from nvchecker.util import RichResult
 
     T = TypeVar("T")
@@ -34,14 +35,19 @@ class Updater:
     repo_dir: Path
     pkgs_dir: Path
     http_client: AsyncClient = field(default_factory=lambda: AsyncClient(http2=True))
-    gh_client: GitHubAPI = field(default=None)  # type: ignore
-
-    def __post_init__(self):
-        if self.gh_client is None:
-            self.gh_client = GitHubAPI(self.http_client, "flying-sheep/pkgbuilds")
+    gh_client: GitHub = field(default_factory=GitHub)
+    known_prs: MutableSequence[PullRequestSimple] = field(default_factory=list)
 
     async def update(self, name: str, oldver: str, new: RichResult) -> None:
         # TODO: do concurrently
+        self.known_prs.clear()
+        async for pr in self.gh_client.paginate(
+            self.gh_client.rest.pulls.async_list,
+            owner="flying-sheep",
+            repo=self.repo_dir.name,
+            state="open",
+        ):
+            self.known_prs.append(pr)
         msg = await self.msg_update(name, oldver, new)
         await self.upsert_pr(name, oldver, new, msg)
 
@@ -61,7 +67,4 @@ class Updater:
     async def upsert_pr(
         self, name: str, oldver: str, new: RichResult, msg: str
     ) -> None:
-        async for x in self.gh_client.getiter(
-            f"/repos/{self.repo_dir.name}/pulls",
-        ):
-            pass
+        print(msg)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from argparse import ArgumentParser, Namespace
 from asyncio import run
-from dataclasses import dataclass, field, fields
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -16,17 +16,18 @@ if TYPE_CHECKING:
 
 @dataclass
 class Args(Namespace):
-    dir: Path = field(default_factory=Path)
+    dir: Path = field(default_factory=Path.cwd)
 
 
 def get_parser() -> ArgumentParser:
-    fields_ = {f.name: f for f in fields(Args)}
+    defaults = Args()
+
     parser = ArgumentParser(prog="nvcheck")
 
     parser.add_argument(
         "dir",
         type=Path,
-        default=fields_["dir"].default_factory(),
+        default=defaults.dir,
         nargs="?",
         help="directory containing `nvchecker.toml` and `pkgs/` subdirectory",
     )

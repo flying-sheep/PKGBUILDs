@@ -14,7 +14,7 @@ dependencies = [
     "srcinfo",
     "httpx[http2,brotli,zstd]",
     "packaging",
-    "gidgethub",
+    "githubkit",
 ]
 dynamic = ["version"]
 
