@@ -3,10 +3,10 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING
 
-from nvchecker.util import RichResult
-
 if TYPE_CHECKING:
     from collections.abc import Mapping
+
+    from nvchecker.util import RichResult
 
 
 PYPI_PAT = re.compile(r"https://pypi.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")

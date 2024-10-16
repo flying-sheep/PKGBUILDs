@@ -3,14 +3,14 @@ from __future__ import annotations
 from argparse import ArgumentParser, Namespace
 from dataclasses import dataclass, field, fields
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 import nvchecker.core
 from nvchecker.util import RichResult
 
-from .update import update_pkgbuilds
 from .nvchecker import NVCheckerArgs, run_nvchecker
 from .srcinfo import read_vers
+from .update import update_pkgbuilds
 
 if TYPE_CHECKING:
     from collections.abc import Sequence

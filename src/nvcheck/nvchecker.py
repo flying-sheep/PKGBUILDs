@@ -1,18 +1,20 @@
 from __future__ import annotations
 
-from argparse import Namespace
 import asyncio
-from pathlib import Path
+from argparse import Namespace
 from typing import TYPE_CHECKING
 from warnings import warn
 
 import nvchecker.core
-from nvchecker.util import ResultData, RawResult, EntryWaiter
 from nvchecker.ctxvars import proxy as ctx_proxy
+from nvchecker.util import EntryWaiter
 
 if TYPE_CHECKING:
-    from typing import Literal, IO
     from collections.abc import Coroutine
+    from pathlib import Path
+    from typing import IO, Literal
+
+    from nvchecker.util import RawResult, ResultData
 
 
 class NVCheckerArgs(Namespace):
