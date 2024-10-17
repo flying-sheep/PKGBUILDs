@@ -3,8 +3,9 @@ from __future__ import annotations
 import asyncio
 import re
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypedDict, cast
 
+import structlog
 from githubkit import GitHub
 from httpx import AsyncClient
 
@@ -19,6 +20,20 @@ if TYPE_CHECKING:
     from nvchecker.util import RichResult
 
     T = TypeVar("T")
+
+
+logger = cast(
+    structlog.types.FilteringBoundLogger, structlog.get_logger(logger_name=__name__)
+)
+
+
+class CommonArgs(TypedDict):
+    owner: str
+    repo: str
+
+
+LABEL_COLOR = "e6db74"
+COMMON_ARGS = CommonArgs(owner="flying-sheep", repo="pkgbuilds")
 
 
 async def update_pkgbuilds(
@@ -43,8 +58,7 @@ class Updater:
         self.known_prs.clear()
         async for pr in self.gh_client.paginate(
             self.gh_client.rest.pulls.async_list,
-            owner="flying-sheep",
-            repo=self.repo_dir.name,
+            **COMMON_ARGS,
             state="open",
         ):
             self.known_prs.append(pr)
@@ -67,4 +81,15 @@ class Updater:
     async def upsert_pr(
         self, name: str, oldver: str, new: RichResult, msg: str
     ) -> None:
-        print(msg)
+        label = f"pkgs/{name}"
+        pr = next((pr for pr in self.known_prs if label in pr.labels), None)
+        # TODO: catch error if exists
+        await self.gh_client.rest.issues.async_create_label(
+            **COMMON_ARGS, name=label, color=LABEL_COLOR
+        )
+        logger.info(
+            "Creating PR" if pr is None else "Updating PR",
+            package=name,
+            pr=None if pr is None else pr.number,
+        )
+        # TODO: actually update
