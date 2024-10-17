@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import os
 import re
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, TypedDict, cast
 
+import githubkit
+import githubkit.exception
 import structlog
 from githubkit import GitHub
 from httpx import AsyncClient
@@ -45,12 +48,16 @@ async def update_pkgbuilds(
             tg.create_task(updater.update(name, oldver, new))
 
 
+def create_github_client() -> GitHub:
+    return GitHub(auth=os.environ.get("GH_TOKEN"))
+
+
 @dataclass
 class Updater:
     repo_dir: Path
     pkgs_dir: Path
     http_client: AsyncClient = field(default_factory=lambda: AsyncClient(http2=True))
-    gh_client: GitHub = field(default_factory=GitHub)
+    gh_client: GitHub = field(default_factory=create_github_client)
     known_prs: MutableSequence[PullRequestSimple] = field(default_factory=list)
 
     async def update(self, name: str, oldver: str, new: RichResult) -> None:
@@ -83,10 +90,14 @@ class Updater:
     ) -> None:
         label = f"pkgs/{name}"
         pr = next((pr for pr in self.known_prs if label in pr.labels), None)
-        # TODO: catch error if exists
-        await self.gh_client.rest.issues.async_create_label(
-            **COMMON_ARGS, name=label, color=LABEL_COLOR
-        )
+        try:
+            await self.gh_client.rest.issues.async_create_label(
+                **COMMON_ARGS, name=label, color=LABEL_COLOR
+            )
+        except githubkit.exception.RequestFailed as e:
+            errors = e.response.parsed_data.errors
+            if len(errors) != 1 or errors[0].code != "already_exists":
+                raise
         logger.info(
             "Creating PR" if pr is None else "Updating PR",
             package=name,
