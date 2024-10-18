@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from operator import and_, sub
 from typing import TYPE_CHECKING, cast, overload
 
+from packaging.metadata import parse_email
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
 
@@ -47,9 +48,29 @@ async def get_all_reqs(
 async def get_reqs(
     http_client: AsyncClient, pypi_name: str, version: str
 ) -> KeysView[Requirement]:
-    url = f"https://pypi.org/pypi/{pypi_name}/{version}/json"
-    resp = await http_client.get(url)
-    return ordered_set(map(Requirement, resp.json()["info"]["requires_dist"]))
+    url = f"https://pypi.org/simple/{pypi_name}/"
+    headers = {"accept": "application/vnd.pypi.simple.v1+json"}
+    resp = await http_client.get(url, headers=headers)
+    resp.raise_for_status()
+    resp_json = resp.json()
+
+    url = next(
+        f["url"]
+        for f in resp_json["files"]
+        if f["filename"].startswith(f"{pypi_name.replace('-', '_')}-{version}")
+        and f["data-dist-info-metadata"]
+    )
+    resp = await http_client.get(f"{url}.metadata", headers=headers)
+    resp.raise_for_status()
+    metadata, _ = parse_email(resp.text)
+
+    # legacy API would be:
+    # url = f"https://pypi.org/pypi/{pypi_name}/{version}/json"
+    # resp = await http_client.get(url)
+    # resp.raise_for_status()
+    # metadata = cast(packaging.metadata.RawMetadata, resp.json()["info"])
+
+    return ordered_set(map(Requirement, metadata.get("requires_dist", [])))
 
 
 @dataclass
