@@ -4,6 +4,7 @@ import asyncio
 import os
 import re
 from dataclasses import dataclass, field
+from functools import partial
 from typing import TYPE_CHECKING, TypedDict, cast
 
 import githubkit
@@ -34,6 +35,12 @@ logger = cast(
 class CommonArgs(TypedDict):
     owner: str
     repo: str
+
+
+class PrUpdateable(TypedDict):
+    title: str
+    base: str
+    body: str
 
 
 LABEL_COLOR = "e6db74"
@@ -99,9 +106,23 @@ class Updater:
             errors = cast(ValidationError, e.response.parsed_data).errors or []
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise
+
+        title = f"Update package {name} from {oldver} to {new.version}"
+        branch = f"update-{name}-{oldver}2{new.version}"
         logger.info(
             "Creating PR" if pr is None else "Updating PR",
             package=name,
             pr=None if pr is None else pr.number,
+            branch=branch,
         )
-        # TODO: actually update
+        # TODO: create branch
+        do_req = (
+            partial(self.gh_client.rest.pulls.async_create, head=branch)
+            if pr is None
+            else partial(self.gh_client.rest.pulls.async_update, pull_number=pr.number)
+        )
+        data = PrUpdateable(title=title, base="main", body=msg)
+        pr = (await do_req(**COMMON_ARGS, **data)).parsed_data
+        await self.gh_client.rest.issues.async_add_labels(
+            **COMMON_ARGS, issue_number=pr.number, labels=[label]
+        )
