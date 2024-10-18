@@ -15,6 +15,7 @@ from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
 from . import pypi
+from .branch import create_branch
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, MutableSequence
@@ -108,14 +109,13 @@ class Updater:
                 raise
 
         title = f"Update package {name} from {oldver} to {new.version}"
-        branch = f"update-{name}-{oldver}2{new.version}"
+        branch = await self.create_branch(name, new.version)
         logger.info(
             "Creating PR" if pr is None else "Updating PR",
             package=name,
             pr=None if pr is None else pr.number,
             branch=branch,
         )
-        # TODO: create branch
         do_req = (
             partial(self.gh_client.rest.pulls.async_create, head=branch)
             if pr is None
@@ -126,3 +126,8 @@ class Updater:
         await self.gh_client.rest.issues.async_add_labels(
             **COMMON_ARGS, issue_number=pr.number, labels=[label]
         )
+
+    async def create_branch(self, name: str, newver: str) -> str:
+        branch = f"update-{name}-2{newver}"
+        await create_branch(self.repo_dir, self.pkgs_dir / name, branch, newver)
+        return branch
