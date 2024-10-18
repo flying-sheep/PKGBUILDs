@@ -10,6 +10,7 @@ import githubkit
 import githubkit.exception
 import structlog
 from githubkit import GitHub
+from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
 from . import pypi
@@ -95,7 +96,7 @@ class Updater:
                 **COMMON_ARGS, name=label, color=LABEL_COLOR
             )
         except githubkit.exception.RequestFailed as e:
-            errors = e.response.parsed_data.errors
+            errors = cast(ValidationError, e.response.parsed_data).errors or []
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise
         logger.info(
