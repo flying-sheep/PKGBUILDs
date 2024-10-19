@@ -1,0 +1,20 @@
+pkgbase = python-fintech
+	pkgdesc = Finance tech: SEPA, EBICS & more
+	pkgver = 7.2.6
+	pkgrel = 1
+	url = https://www.joonis.de/en/fintech/
+	arch = any
+	license = custom:restricted use
+	makedepends = python-installer
+	depends = python>=3.10
+	depends = python<3.11
+	depends = python-lxml
+	depends = python-cryptography
+	depends = python-certifi
+	depends = python-fpdf>=1.7.2
+	depends = python-defusedxml
+	noextract = fintech-7.2.6-cp310-none-any.whl
+	source = https://files.pythonhosted.org/packages/cp310/f/fintech/fintech-7.2.6-cp310-none-any.whl
+	sha256sums = f720f895d91c937f6d0c1d496ef12c357ec9713bad6a1a4f65af66cdee874924
+
+pkgname = python-fintech
