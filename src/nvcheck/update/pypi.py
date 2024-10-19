@@ -90,9 +90,13 @@ class PyPIDepChanges:
         self.removed = sub(*bare_reqs.values())
         self.added = sub(*reversed(bare_reqs.values()))
         reqs_in_both = cast(KeysView[Requirement], and_(*bare_reqs.values()))
-        self.changed = [  # type: ignore
-            tuple(find_req(req.name, reqs) for reqs in self.reqs.values())
-            for req in reqs_in_both
+        self.changed = [
+            (old, new)
+            for old, new in [
+                tuple(find_req(req.name, reqs) for reqs in self.reqs.values())
+                for req in reqs_in_both
+            ]
+            if old != new
         ]
 
     def __str__(self) -> str:
