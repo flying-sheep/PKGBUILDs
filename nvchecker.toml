@@ -5,6 +5,10 @@ httplib = "httpx"
 source = "pypi"
 pypi = "anndata"
 
+[python-fintech]
+source = "pypi"
+pypi = "fintech"
+
 [python-get_version]
 source = "pypi"
 pypi = "get-version"
