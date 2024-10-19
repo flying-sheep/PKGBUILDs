@@ -57,8 +57,12 @@ async def update_pkgbuilds(
             tg.create_task(updater.update(name, oldver, new))
 
 
+def get_token() -> str | None:
+    return os.environ.get("GH_TOKEN")
+
+
 def create_github_client() -> GitHub:
-    return GitHub(auth=os.environ.get("GH_TOKEN"))
+    return GitHub(auth=get_token())
 
 
 @dataclass

@@ -12,6 +12,9 @@ from pygit2.repository import Repository
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
+    from pygit2.callbacks import _Credentials
+    from pygit2.enums import CredentialType
+
 
 async def create_branch(
     repo_dir: Path, pkg_dir: Path, branch: str, newver: str
@@ -63,6 +66,11 @@ async def create_branch(
 @dataclass
 class RemoteCallbacks(pygit2.RemoteCallbacks):
     future: asyncio.Future = field(default_factory=asyncio.Future)
+
+    def credentials(
+        self, url: str, username_from_url: str | None, allowed_types: CredentialType
+    ) -> _Credentials:
+        return pygit2.KeypairFromAgent(username_from_url or "git")
 
     def push_update_reference(self, refname: str, message: str | None):
         if message is None:
