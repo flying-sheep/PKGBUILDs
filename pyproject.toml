@@ -25,6 +25,8 @@ source = "vcs"
 [tool.hatch.envs.default]
 installer = "uv"
 extra-dependencies = [ "types-pygit2" ]
+scripts.pkg-add = "git subtree add -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
+scripts.pkg-push = "git subtree push -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
 
 [tool.pytest.ini_options]
 addopts = [
