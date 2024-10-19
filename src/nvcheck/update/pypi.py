@@ -28,27 +28,27 @@ URL_PAT = re.compile(r"https://pypi.org/project/(?P<name>[\w-]*)/(?P<version>[\d
 
 
 async def msg_update(
-    http_client: AsyncClient, pypi_name: str, versions: tuple[str, str]
+    http_client: AsyncClient, name: str, versions: tuple[str, str]
 ) -> str:
-    reqs = await get_all_reqs(http_client, pypi_name, versions)
-    return str(PyPIDepChanges(pypi_name, reqs))
+    reqs = await get_all_reqs(http_client, name, versions)
+    return str(PyPIDepChanges(name, reqs))
 
 
 async def get_all_reqs(
-    http_client: AsyncClient, pypi_name: str, versions: Iterable[str]
+    http_client: AsyncClient, name: str, versions: Iterable[str]
 ) -> dict[str, KeysView[Requirement]]:
     async with asyncio.TaskGroup() as tg:
         tasks = {
-            version: tg.create_task(get_reqs(http_client, pypi_name, version))
+            version: tg.create_task(get_reqs(http_client, name, version))
             for version in versions
         }
     return {version: task.result() for version, task in tasks.items()}
 
 
 async def get_reqs(
-    http_client: AsyncClient, pypi_name: str, version: str
+    http_client: AsyncClient, name: str, version: str
 ) -> KeysView[Requirement]:
-    url = f"https://pypi.org/simple/{pypi_name}/"
+    url = f"https://pypi.org/simple/{name}/"
     headers = {"accept": "application/vnd.pypi.simple.v1+json"}
     resp = await http_client.get(url, headers=headers)
     resp.raise_for_status()
@@ -57,7 +57,7 @@ async def get_reqs(
     url = next(
         f["url"]
         for f in resp_json["files"]
-        if f["filename"].startswith(f"{pypi_name.replace('-', '_')}-{version}")
+        if f["filename"].startswith(f"{name.replace('-', '_')}-{version}")
         and f["data-dist-info-metadata"]
     )
     resp = await http_client.get(f"{url}.metadata", headers=headers)
@@ -75,7 +75,7 @@ async def get_reqs(
 
 @dataclass
 class PyPIDepChanges:
-    pypi_name: str
+    name: str
     reqs: Mapping[str, KeysView[Requirement]]
 
     removed: KeysView[Requirement] = field(init=False)
@@ -101,7 +101,7 @@ class PyPIDepChanges:
 
     def __str__(self) -> str:
         v0, v1 = self.reqs.keys()
-        msg = f"PyPI update: {self.pypi_name} ({v0} -> {v1})"
+        msg = f"PyPI update: {self.name} ({v0} -> {v1})"
         if self.removed:
             msg += f"\n- { {str(req) for req in self.removed} }"
         if self.added:

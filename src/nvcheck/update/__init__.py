@@ -14,7 +14,7 @@ from githubkit import GitHub
 from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
-from . import pypi
+from . import cratesio, pypi
 from .branch import create_branch
 
 if TYPE_CHECKING:
@@ -89,6 +89,10 @@ class Updater:
         match new.url:
             case str() if (match := re.fullmatch(pypi.URL_PAT, new.url)):
                 return await pypi.msg_update(
+                    self.http_client, match["name"], (oldver, match["version"])
+                )
+            case str() if (match := re.fullmatch(cratesio.URL_PAT, new.url)):
+                return await cratesio.msg_update(
                     self.http_client, match["name"], (oldver, match["version"])
                 )
             case None:
