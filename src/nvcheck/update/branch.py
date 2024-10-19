@@ -7,6 +7,7 @@ from tempfile import TemporaryDirectory
 from typing import TYPE_CHECKING, cast
 
 import pygit2
+import structlog
 from pygit2.repository import Repository
 
 if TYPE_CHECKING:
@@ -14,6 +15,11 @@ if TYPE_CHECKING:
 
     from pygit2.callbacks import _Credentials
     from pygit2.enums import CredentialType
+
+
+logger = cast(
+    structlog.types.FilteringBoundLogger, structlog.get_logger(logger_name=__name__)
+)
 
 
 async def create_branch(
@@ -30,7 +36,11 @@ async def create_branch(
             Repository,
             pygit2.clone_repository(str(repo_dir), tmp_dir, checkout_branch="main"),
         )
-        pkg_dir = Path(tmp_dir) / pkg_dir.relative_to(repo_dir)
+        repo.remotes.set_url("origin", origin.url)
+        if origin.push_url:
+            repo.remotes.set_push_url("origin", origin.push_url)
+        pkg_dir_rel = pkg_dir.relative_to(repo_dir)
+        pkg_dir = Path(tmp_dir) / pkg_dir_rel
         del tmp_dir
 
         lines = (pkg_dir / "PKGBUILD").read_text().splitlines()
@@ -45,22 +55,25 @@ async def create_branch(
             if (await proc.wait()) != 0:
                 raise RuntimeError(f"{cmd} failed")
 
-        repo.index.add_all(["PKGBUILD", ".SRCINFO"])
+        parent = repo.head.target
+        repo.index.add_all([pkg_dir_rel / p for p in ["PKGBUILD", ".SRCINFO"]])
+        repo.index.write()
+        tree = repo.index.write_tree()
+        if patch := repo.diff(parent, tree).patch:
+            logger.info("Committing", patch=patch)
+        else:
+            msg = "nothing to commit"
+            raise RuntimeError(msg)
         repo.create_commit(
-            "HEAD",
+            repo.head.name,
             repo.default_signature,
             repo.default_signature,
             f"v{newver}",
-            repo.index.write_tree(),
-            [repo.head.target],
+            tree,
+            [parent],
         )
-        repo.index.write()
-
         # “+” means force
-        repo.remotes.set_url("origin", origin.url)
-        if origin.push_url:
-            repo.remotes.set_push_url("origin", origin.push_url)
-        await push(repo.remotes["origin"], [f"+HEAD:refs/heads/{branch}"])
+        await push(repo.remotes["origin"], [f"+{repo.head.name}:refs/heads/{branch}"])
 
 
 @dataclass

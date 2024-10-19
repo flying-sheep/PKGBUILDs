@@ -98,11 +98,21 @@ class Updater:
                 msg = f"unknown URL pattern for {name}: {new.url}"
                 raise RuntimeError(msg)
 
+    def find_pr(
+        self, number: int | None = None, *, labels: set[str]
+    ) -> PullRequestSimple | None:
+        for pr in self.known_prs:
+            if number is not None and pr.number != number:
+                continue
+            if not (labels <= {label.name for label in pr.labels}):
+                continue
+            return pr
+        return None
+
     async def upsert_pr(
         self, name: str, oldver: str, new: RichResult, msg: str
     ) -> None:
         label = f"pkgs/{name}"
-        pr = next((pr for pr in self.known_prs if label in pr.labels), None)
         try:
             await self.gh_client.rest.issues.async_create_label(
                 **COMMON_ARGS, name=label, color=LABEL_COLOR
@@ -112,7 +122,7 @@ class Updater:
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise
 
-        title = f"Update package {name} from {oldver} to {new.version}"
+        pr = self.find_pr(labels={label})
         branch = await self.create_branch(name, new.version)
         logger.info(
             "Creating PR" if pr is None else "Updating PR",
@@ -125,6 +135,7 @@ class Updater:
             if pr is None
             else partial(self.gh_client.rest.pulls.async_update, pull_number=pr.number)
         )
+        title = f"Update package {name} from {oldver} to {new.version}"
         data = PrUpdateable(title=title, base="main", body=msg)
         pr = (await do_req(**COMMON_ARGS, **data)).parsed_data
         await self.gh_client.rest.issues.async_add_labels(
@@ -132,6 +143,6 @@ class Updater:
         )
 
     async def create_branch(self, name: str, newver: str) -> str:
-        branch = f"update-{name}-2{newver}"
+        branch = f"update-{name}-to-{newver}"
         await create_branch(self.repo_dir, self.pkgs_dir / name, branch, newver)
         return branch
