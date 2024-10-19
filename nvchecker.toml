@@ -5,6 +5,10 @@ httplib = "httpx"
 source = "pypi"
 pypi = "anndata"
 
+[python-array-api-compat]
+source = "pypi"
+pypi = "array-api-compat"
+
 [python-fintech]
 source = "pypi"
 pypi = "fintech"
