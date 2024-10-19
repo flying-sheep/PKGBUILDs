@@ -16,3 +16,7 @@ pypi = "fintech"
 [python-get_version]
 source = "pypi"
 pypi = "get-version"
+
+[resvg]
+source = "cratesio"
+cratesio = "resvg"
