@@ -26,17 +26,17 @@ prepare() {
 
 build() {
 	cd "$pkgname-$pkgver"
-	
+
 	export RUSTUP_TOOLCHAIN=stable
 	export CARGO_TARGET_DIR=target
 	cargo build --workspace --frozen --release --all-features
-	
+
 	(
 		cd tools/viewsvg
 		qmake PREFIX="$pkgdir/usr"
 		make
 	)
-	
+
 	(
 		cd tools/kde-dolphin-thumbnailer/build
 		cmake .. \
@@ -47,7 +47,7 @@ build() {
 			-DCMAKE_BUILD_TYPE=Release
 		make
 	)
-	
+
 	cargo doc --release --no-deps -p resvg-capi
 }
 
