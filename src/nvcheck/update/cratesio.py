@@ -15,4 +15,4 @@ URL_PAT = re.compile(r"https://crates.io/crates/(?P<name>[\w-]*)/(?P<version>[\d
 async def msg_update(
     http_client: AsyncClient, name: str, versions: tuple[str, str]
 ) -> str:
-    raise AssertionError()
+    return f"crates.io update: {name} ({versions[0]} -> {versions[1]})"
