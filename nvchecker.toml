@@ -17,6 +17,10 @@ pypi = "fintech"
 source = "pypi"
 pypi = "get-version"
 
+[python-qtico]
+source = "pypi"
+pypi = "qtico"
+
 [resvg]
 source = "cratesio"
 cratesio = "resvg"
