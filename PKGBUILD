@@ -3,12 +3,12 @@
 _name=conda-libmamba-solver
 pkgname=python-$_name
 pkgver=24.9.1a
-pkgrel=1
+pkgrel=2
 pkgdesc='The libmamba based solver for conda.'
 arch=(any)
 url="https://github.com/conda/$_name"
 license=(BSD-3-Clause)
-depends=(python-libmamba python-boltons)
+depends=(python-libmambapy python-boltons)
 makedepends=(python-hatch-vcs python-build python-installer python-wheel)
 _v=6fe4cd9325f23074f781d8915cf5d4e0c725dbb1
 source=("$pkgname-$pkgver.tar.gz::$url/archive/$_v.tar.gz")
