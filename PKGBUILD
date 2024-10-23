@@ -6,7 +6,7 @@ pkgname=python-libmamba
 pkgver=2.0.0
 _srcver=2024.09.25 
 _name=mamba-$_srcver
-pkgrel=1
+pkgrel=2
 pkgdesc="The fast cross-platform package manager"
 arch=('x86_64')
 url="https://github.com/mamba-org/mamba"
@@ -38,7 +38,7 @@ makedepends=(
   'python-setuptools>=42'
   'python-wheel'
 )
-provides=("libmamba=$pkgver")
+provides=("libmamba=$pkgver" "python-libmambapy=$pkgver")
 conflicts=('micromamba')
 #options=(!emptydirs)
 #backup=(etc/conda/condarc)
