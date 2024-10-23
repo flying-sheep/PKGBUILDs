@@ -3,8 +3,8 @@
 # Contributor: Ke Liu <specter119@gmail.com>
 
 pkgname=python-libmamba
-pkgver=1.5.9
-_srcver=2024.08.31
+pkgver=2.0.0
+_srcver=2024.09.25 
 _name=mamba-$_srcver
 pkgrel=1
 pkgdesc="The fast cross-platform package manager"
@@ -17,6 +17,7 @@ depends=(
   'python>=3.9'
   'reproc'
   'yaml-cpp>=0.8.0'
+  'simdjson'
 )
 makedepends=(
   # header-only libs
@@ -26,9 +27,9 @@ makedepends=(
   'nlohmann-json'
   # C++ build tools
   'ccache'
-  'cmake>=3.18'
+  'python-cmake>=3.18'
   'doctest'
-  'ninja'
+  'python-ninja'
   'pybind11'
   # python build tools
   'python-build'
@@ -37,39 +38,42 @@ makedepends=(
   'python-setuptools>=42'
   'python-wheel'
 )
-provides=('libmamba')
+provides=("libmamba=$pkgver")
+conflicts=('micromamba')
 #options=(!emptydirs)
 #backup=(etc/conda/condarc)
-source=(
-  $_name-$pkgver.tar.gz::$url/archive/refs/tags/$_srcver.tar.gz
-)
-sha512sums=('7b3b8891acae69bd7fa62b304c8d91fcb02bc6c653e7d25d4cc73b97fa1ed4bf85aa21a71dbb5fd608b233eb9647665f5bd0c956fc430e769b151a7e424cedd2')
-
-prepare() {
-  cd $srcdir/${_name}
-}
+source=("$_name-$pkgver.tar.gz::$url/archive/refs/tags/$_srcver.tar.gz")
+sha512sums=('6b3e64255f8aa63723dd08f578f79195b46249a02002b6d0d77713fd181f0557e3b6044075a823e639b0240b07b4e17dd0c9c17790c9152a68992e3ca9a599fa')
 
 build() {
-  cd $srcdir/${_name}
-  cmake -B build/ -G Ninja \
-    -D CMAKE_C_COMPILER=gcc -D CMAKE_CXX_COMPILER=g++ \
-    -D CMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-    -D BUILD_LIBMAMBA=ON \
-    -D BUILD_LIBMAMBAPY=ON \
-    -D BUILD_MICROMAMBA=OFF \
-    -D BUILD_MAMBA_PACKAGE=OFF \
-    --preset mamba-shared-debug
-  cmake --build build/ --parallel
+  cd "$srcdir/$_name"
 
-  cd $srcdir/${_name}/libmambapy
-  python -m build --wheel --no-isolation
+  cmake -S. -Bbuild \
+    -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+    -DBUILD_LIBMAMBA=ON \
+    -DBUILD_LIBMAMBAPY=ON \
+    -DBUILD_MICROMAMBA=OFF \
+    -DBUILD_MAMBA_PACKAGE=OFF \
+    -DBUILD_SHARED=ON
+  cmake --build build --parallel 8
+  cmake --install build --prefix install
+
+  cd libmambapy
+  export SKBUILD_CONFIGURE_OPTIONS="\
+      -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+      -DBUILD_LIBMAMBA=ON \
+      -DBUILD_LIBMAMBAPY=ON \
+      -DBUILD_MICROMAMBA=OFF \
+      -DBUILD_MAMBA_PACKAGE=OFF \
+      -Dlibmamba_ROOT=$PWD/../install"
+  python -m build -x --wheel --no-isolation
 }
 
 package() {
-  cd $srcdir/${_name}
+  cd "$srcdir/$_name"
   cmake --install build/ --prefix "$pkgdir/usr"
 
-  cd $srcdir/${_name}/libmambapy
+  cd "$srcdir/$_name/libmambapy"
   python -m installer --destdir="$pkgdir" dist/*.whl
  
   install -Dm 644 LICENSE $pkgdir/usr/share/licenses/${pkgname}/LICENSE.txt
