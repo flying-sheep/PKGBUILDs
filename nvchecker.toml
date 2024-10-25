@@ -13,6 +13,10 @@ pypi = "array-api-compat"
 source = "pypi"
 pypi = "fintech"
 
+[python-fpdf]
+source = "pypi"
+pypi = "fpdf"
+
 [python-get_version]
 source = "pypi"
 pypi = "get-version"
