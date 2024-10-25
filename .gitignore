@@ -1,6 +1,6 @@
-/*/src/
-/*/pkg/
-/*/*.pkg.*
-/*/*.tar.gz
+/pkgs/*/src/
+/pkgs/*/pkg/
+/pkgs/*/*.pkg.*
+/pkgs/*/*.tar.gz
 
 __pycache__/
