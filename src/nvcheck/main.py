@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
 from .update import update_pkgbuilds
+from .update.pkgbuilds import sync_maintained_pkgbuilds
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -56,4 +57,5 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != old_vers[name]
     }
 
+    run(sync_maintained_pkgbuilds())
     run(update_pkgbuilds(updated, repo_dir=args.dir, pkgs_dir=pkgs_dir))
