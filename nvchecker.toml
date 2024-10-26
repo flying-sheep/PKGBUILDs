@@ -32,3 +32,8 @@ pypi = "qtico"
 [resvg]
 source = "cratesio"
 cratesio = "resvg"
+
+[terrafirma]
+source = "github"
+github = "mrkite/TerraFirma"
+use_latest_release = true
