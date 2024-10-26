@@ -77,18 +77,25 @@ async def pkg_mod(
     nvchecker_path: Path,
 ) -> None:
     assert (type is not None) is (cmd == "add")
-    if type == "remove":
-        raise NotImplementedError("remove not implemented")  # TODO
+    match cmd:
+        case "remove":
+            full_cmd = ("git", "rm")
+            args = ("-rf", f"pkgs/{name}")
+            #  TODO: commit
+        case "add" | "push":
+            full_cmd = ("git", "subtree", cmd)
+            args = (
+                f"--prefix=pkgs/{name}",
+                f"ssh://aur@aur.archlinux.org/{name}.git",
+                "master",
+            )
+        case _:
+            msg = f"unknown cmd: {cmd}"
+            raise RuntimeError(msg)
     proc = await asyncio.subprocess.create_subprocess_exec(
-        "git",
-        "subtree",
-        cmd,
-        f"--prefix=pkgs/{name}",
-        f"ssh://aur@aur.archlinux.org/{name}.git",
-        "master",
-        cwd=repo_dir,
+        *full_cmd, *args, cwd=repo_dir
     )
     if (await proc.wait()) != 0:
-        raise RuntimeError(f"git subtree {cmd} failed")
+        raise RuntimeError(f"{' '.join(full_cmd)} failed")
 
     # TODO: modify nvchecker.toml
