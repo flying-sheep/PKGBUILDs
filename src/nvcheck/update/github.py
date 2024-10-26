@@ -9,10 +9,12 @@ if TYPE_CHECKING:
 
 __all__ = ["URL_PAT", "msg_update"]
 
-URL_PAT = re.compile(r"https://crates\.io/crates/(?P<name>[\w-]+)/(?P<version>[\d.]+)")
+URL_PAT = re.compile(
+    r"https://github\.com/[^/]+/(?P<name>[^/]+)/releases/tag/v?(?P<version>[\d.]+)"
+)
 
 
 async def msg_update(
     http_client: AsyncClient, name: str, versions: tuple[str, str]
 ) -> str:
-    return f"crates.io update: {name} ({versions[0]} -> {versions[1]})"
+    return f"github.com update: {name} ({versions[0]} -> {versions[1]})"

@@ -14,7 +14,7 @@ from githubkit import GitHub
 from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
-from . import cratesio, pypi
+from . import cratesio, github, pypi
 from .branch import create_branch
 
 if TYPE_CHECKING:
@@ -86,21 +86,16 @@ class Updater:
         await self.upsert_pr(name, oldver, new, msg)
 
     async def msg_update(self, name: str, oldver: str, new: RichResult) -> str:
-        match new.url:
-            case str() if (match := re.fullmatch(pypi.URL_PAT, new.url)):
-                return await pypi.msg_update(
+        if new.url is None:
+            msg = f"no url for {name}"
+            raise RuntimeError(msg)
+        for mod in (pypi, cratesio, github):
+            if match := re.fullmatch(mod.URL_PAT, new.url):
+                return await mod.msg_update(
                     self.http_client, match["name"], (oldver, match["version"])
                 )
-            case str() if (match := re.fullmatch(cratesio.URL_PAT, new.url)):
-                return await cratesio.msg_update(
-                    self.http_client, match["name"], (oldver, match["version"])
-                )
-            case None:
-                msg = f"no url for {name}"
-                raise RuntimeError(msg)
-            case _:
-                msg = f"unknown URL pattern for {name}: {new.url}"
-                raise RuntimeError(msg)
+        msg = f"unknown URL pattern for {name}: {new.url}"
+        raise RuntimeError(msg)
 
     def find_pr(
         self, number: int | None = None, *, labels: set[str]

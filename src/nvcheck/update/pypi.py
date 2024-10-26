@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 __all__ = ["URL_PAT", "msg_update"]
 
-URL_PAT = re.compile(r"https://pypi.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")
+URL_PAT = re.compile(r"https://pypi\.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")
 
 
 async def msg_update(
