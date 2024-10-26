@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+import asyncio
+from typing import TYPE_CHECKING, cast, overload
 
 import structlog
 from nvchecker.core import load_file
@@ -13,7 +14,11 @@ from aurweb_client.types import Unset
 from .update import COMMON_ARGS
 
 if TYPE_CHECKING:
+    from collections.abc import Set as AbstractSet
     from pathlib import Path
+    from typing import Literal
+
+    Type = Literal["pypi", "cratesio", "github"]
 
 
 logger = cast(
@@ -21,7 +26,7 @@ logger = cast(
 )
 
 
-async def sync_maintained_pkgbuilds(nvchecker_path: Path) -> None:
+async def sync_maintained_pkgbuilds(nvchecker_path: Path, *, repo_dir: Path) -> None:
     entries, _ = load_file(str(nvchecker_path), use_keymanager=False)
 
     client = Client("https://aur.archlinux.org/", raise_on_unexpected_status=True)
@@ -34,5 +39,56 @@ async def sync_maintained_pkgbuilds(nvchecker_path: Path) -> None:
 
     if untracked := maintained - tracked:
         logger.critical("Found untracked packages", untracked=untracked)
+        await add_untracked(untracked, repo_dir=repo_dir, nvchecker_path=nvchecker_path)
     if unmaintained := tracked - maintained:
         logger.critical("Found unmaintained packages", unmaintained=unmaintained)
+
+
+async def add_untracked(
+    untracked: AbstractSet[str], *, repo_dir: Path, nvchecker_path: Path
+) -> None:
+    raise NotImplementedError("add_untracked not implemented")  # TODO
+
+
+@overload
+async def pkg_mod(
+    name: str,
+    cmd: Literal["add"],
+    *,
+    type: Type,
+    repo_dir: Path,
+    nvchecker_path: Path,
+) -> None: ...
+@overload
+async def pkg_mod(
+    name: str,
+    cmd: Literal["push", "remove"],
+    *,
+    type: None,
+    repo_dir: Path,
+    nvchecker_path: Path,
+) -> None: ...
+async def pkg_mod(
+    name: str,
+    cmd: Literal["add", "push", "remove"],
+    *,
+    type: Type | None,
+    repo_dir: Path,
+    nvchecker_path: Path,
+) -> None:
+    assert (type is not None) is (cmd == "add")
+    if type == "remove":
+        raise NotImplementedError("remove not implemented")  # TODO
+    proc = await asyncio.subprocess.create_subprocess_exec(
+        "git",
+        "subtree",
+        cmd,
+        f"--prefix=pkgs/{name}",
+        f"ssh://aur@aur.archlinux.org/{name}.git",
+        "master",
+        cwd=repo_dir,
+    )
+    if (await proc.wait()) != 0:
+        raise RuntimeError(f"git subtree {cmd} failed")
+
+    # TODO: modify nvchecker.toml

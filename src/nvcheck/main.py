@@ -58,5 +58,5 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != old_vers[name]
     }
 
-    run(sync_maintained_pkgbuilds(nvchecker_path))
+    run(sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir))
     run(update_pkgbuilds(updated, repo_dir=args.dir, pkgs_dir=pkgs_dir))
