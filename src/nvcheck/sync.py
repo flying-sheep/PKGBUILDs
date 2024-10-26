@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+from itertools import chain, pairwise
 from typing import TYPE_CHECKING, cast, overload
 
 import structlog
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import Literal
 
-    Type = Literal["pypi", "cratesio", "github"]
+    SourceName = Literal["pypi", "cratesio", "github"]
 
 
 logger = cast(
@@ -34,7 +35,9 @@ async def sync_maintained_pkgbuilds(nvchecker_path: Path, *, repo_dir: Path) -> 
     if resp is None or isinstance(resp.results, Unset):
         return
 
-    maintained = {result.name for result in resp.results}
+    maintained = {
+        result.name for result in resp.results if isinstance(result.name, str)
+    }
     tracked = entries.keys()
 
     if untracked := maintained - tracked:
@@ -55,7 +58,7 @@ async def pkg_mod(
     name: str,
     cmd: Literal["add"],
     *,
-    type: Type,
+    source: SourceName,
     repo_dir: Path,
     nvchecker_path: Path,
 ) -> None: ...
@@ -64,7 +67,7 @@ async def pkg_mod(
     name: str,
     cmd: Literal["push", "remove"],
     *,
-    type: None,
+    source: None,
     repo_dir: Path,
     nvchecker_path: Path,
 ) -> None: ...
@@ -72,11 +75,10 @@ async def pkg_mod(
     name: str,
     cmd: Literal["add", "push", "remove"],
     *,
-    type: Type | None,
+    source: SourceName | None,
     repo_dir: Path,
     nvchecker_path: Path,
 ) -> None:
-    assert (type is not None) is (cmd == "add")
     match cmd:
         case "remove":
             full_cmd = ("git", "rm")
@@ -98,4 +100,36 @@ async def pkg_mod(
     if (await proc.wait()) != 0:
         raise RuntimeError(f"{' '.join(full_cmd)} failed")
 
-    # TODO: modify nvchecker.toml
+    if cmd not in {"add", "remove"}:
+        assert source is None
+        return
+
+    segments = parse_nvchecker_toml(nvchecker_path)
+    segment_list = list(segments.values())
+    if cmd == "add":
+        assert source is not None
+        insert_idx = sorted(chain(segments.keys(), name)).index(name)
+        segment_list.insert(insert_idx, f"[{name}]\nsource = '{source}'")
+    elif cmd == "remove":
+        assert source is None
+        remove_idx = list(segments.keys()).index(name)
+        segment_list.pop(remove_idx)
+    nvchecker_path.write_text("\n\n".join(segment_list))
+
+
+def parse_nvchecker_toml(
+    nvchecker_path: Path,
+) -> dict[str, str]:
+    lines = nvchecker_path.read_text().splitlines()
+    name2start = {line[1:-1]: i for i, line in enumerate(lines) if line.startswith("[")}
+    segments = {
+        prev: "\n".join(lines[prevstart:nextstart])
+        for (prev, prevstart), (_, nextstart) in pairwise(
+            chain(name2start.items(), [("", len(lines))])
+        )
+        if prev != "__config__"
+    }
+    if sorted(segments.keys()) != list(segments.keys()):
+        msg = "unsorted tables in nvchecker.toml"
+        raise RuntimeError(msg)
+    return segments
