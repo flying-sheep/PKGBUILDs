@@ -41,11 +41,12 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
 
     setup_logging()
 
+    nvchecker_path = args.dir / "nvchecker.toml"
     pkgs_dir = args.dir / "pkgs"
     old_vers = read_vers(pkgs_dir)
 
     try:
-        new_vers, has_failures = run_nvchecker(args.dir / "nvchecker.toml", old_vers)
+        new_vers, has_failures = run_nvchecker(nvchecker_path, old_vers)
     except FileLoadError as e:
         return str(e)
     if has_failures:
@@ -57,5 +58,5 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != old_vers[name]
     }
 
-    run(sync_maintained_pkgbuilds())
+    run(sync_maintained_pkgbuilds(nvchecker_path))
     run(update_pkgbuilds(updated, repo_dir=args.dir, pkgs_dir=pkgs_dir))
