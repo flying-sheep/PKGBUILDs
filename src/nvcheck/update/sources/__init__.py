@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from ._source import Source
 
 
-__all__ = ["msg_update"]
+__all__ = ["msg_update", "SOURCES"]
 
 SOURCES: tuple[type[Source], ...] = (
     github.Source,
