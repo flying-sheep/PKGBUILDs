@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "hatchling.build"
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling", "hatch-vcs", "openapi-python-client"]
 
 [project]
 name = "nvcheck"
@@ -16,6 +16,7 @@ dependencies = [
     "packaging",
     "githubkit",
     "pygit2",
+    "attrs",  # for generated client
 ]
 dynamic = ["version"]
 optional-dependencies.test = ["pytest"]
@@ -23,15 +24,15 @@ optional-dependencies.test = ["pytest"]
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.build.hooks.custom]
 [tool.hatch.build.targets.wheel]
 packages = ["src/nvcheck", "src/aurweb_client"]
 
 [tool.hatch.envs.default]
 installer = "uv"
-extra-dependencies = [ "types-pygit2", "openapi-python-client" ]
+extra-dependencies = [ "types-pygit2" ]
 scripts.pkg-add = "git subtree add -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
 scripts.pkg-push = "git subtree push -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
-scripts.gen-client = "openapi-python-client generate --url=https://aur.archlinux.org/rpc/openapi.json --output-path=src/aurweb_client --meta=none"
 
 [tool.pytest.ini_options]
 addopts = [
