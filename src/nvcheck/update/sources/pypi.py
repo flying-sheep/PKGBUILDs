@@ -11,7 +11,8 @@ from packaging.metadata import parse_email
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
 
-from ..utils import ordered_set
+from ...utils import ordered_set
+from . import _source
 
 if TYPE_CHECKING:
     from collections.abc import Generator, Iterable, Mapping, Sequence, Set
@@ -22,16 +23,17 @@ if TYPE_CHECKING:
     T = TypeVar("T")
 
 
-__all__ = ["URL_PAT", "msg_update"]
-
-URL_PAT = re.compile(r"https://pypi\.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/")
+__all__ = ["Source"]
 
 
-async def msg_update(
-    http_client: AsyncClient, name: str, versions: tuple[str, str]
-) -> str:
-    reqs = await get_all_reqs(http_client, name, versions)
-    return str(PyPIDepChanges(name, reqs))
+class Source(_source.Source):
+    url_pat = re.compile(
+        r"https://pypi\.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/"
+    )
+
+    async def msg_update(self, name: str, versions: tuple[str, str]) -> str:
+        reqs = await get_all_reqs(self.http_client, name, versions)
+        return str(PyPIDepChanges(name, reqs))
 
 
 async def get_all_reqs(

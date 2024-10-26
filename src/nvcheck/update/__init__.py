@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import os
-import re
 from dataclasses import dataclass, field
 from functools import partial
 from typing import TYPE_CHECKING, TypedDict, cast
@@ -14,8 +13,8 @@ from githubkit import GitHub
 from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
-from . import cratesio, github, pypi
 from .branch import create_branch
+from .sources import msg_update
 
 if TYPE_CHECKING:
     from collections.abc import Mapping, MutableSequence
@@ -89,11 +88,10 @@ class Updater:
         if new.url is None:
             msg = f"no url for {name}"
             raise RuntimeError(msg)
-        for mod in (pypi, cratesio, github):
-            if match := re.fullmatch(mod.URL_PAT, new.url):
-                return await mod.msg_update(
-                    self.http_client, match["name"], (oldver, match["version"])
-                )
+        if (
+            msg := await msg_update(self.http_client, new.url, oldver, new)
+        ) is not None:
+            return msg
         msg = f"unknown URL pattern for {name}: {new.url}"
         raise RuntimeError(msg)
 
