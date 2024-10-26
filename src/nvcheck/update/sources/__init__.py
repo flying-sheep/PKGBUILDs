@@ -6,7 +6,6 @@ from . import cratesio, github, pypi
 
 if TYPE_CHECKING:
     from httpx import AsyncClient
-    from nvchecker.util import RichResult
 
     from . import _source
 
@@ -20,11 +19,9 @@ SOURCES: tuple[type[_source.Source], ...] = (
 )
 
 
-async def msg_update(
-    http_client: AsyncClient, url: str, oldver: str, new: RichResult
-) -> str | None:
+async def msg_update(http_client: AsyncClient, url: str, oldver: str) -> str | None:
     for source_cls in SOURCES:
         source = source_cls(http_client)
-        if match := source.url_pat.fullmatch(new.url):
+        if match := source.url_pat.fullmatch(url):
             return await source.msg_update(match["name"], (oldver, match["version"]))
     return None

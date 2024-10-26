@@ -88,9 +88,7 @@ class Updater:
         if new.url is None:
             msg = f"no url for {name}"
             raise RuntimeError(msg)
-        if (
-            msg := await msg_update(self.http_client, new.url, oldver, new)
-        ) is not None:
+        if (msg := await msg_update(self.http_client, new.url, oldver)) is not None:
             return msg
         msg = f"unknown URL pattern for {name}: {new.url}"
         raise RuntimeError(msg)
