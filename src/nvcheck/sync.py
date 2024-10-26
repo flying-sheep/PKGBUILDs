@@ -5,7 +5,7 @@ from aurweb_client.api.package_search import get_rpc_v5_search_arg as search
 from aurweb_client.models.get_rpc_v5_search_arg_by import GetRpcV5SearchArgBy as By
 from aurweb_client.types import Unset
 
-from ..update import COMMON_ARGS
+from .update import COMMON_ARGS
 
 
 async def sync_maintained_pkgbuilds() -> None:

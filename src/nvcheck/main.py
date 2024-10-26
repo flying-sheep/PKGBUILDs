@@ -8,8 +8,8 @@ from typing import TYPE_CHECKING
 
 from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
+from .sync import sync_maintained_pkgbuilds
 from .update import update_pkgbuilds
-from .update.pkgbuilds import sync_maintained_pkgbuilds
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
