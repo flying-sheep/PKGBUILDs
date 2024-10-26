@@ -40,6 +40,7 @@ addopts = [
     "--strict-markers",
     "--doctest-modules",
     "--pyargs",
+    "--ignore=hatch_build.py",
 ]
 filterwarnings = ["error"]
 xfail_strict = true
