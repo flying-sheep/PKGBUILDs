@@ -32,10 +32,7 @@ async def sync_maintained_pkgbuilds(nvchecker_path: Path) -> None:
     maintained = {result.name for result in resp.results}
     tracked = entries.keys()
 
-    untracked = maintained - tracked
-    unmaintained = tracked - maintained
-
-    if untracked:
+    if untracked := maintained - tracked:
         logger.critical("Found untracked packages", untracked=untracked)
-    if unmaintained:
+    if unmaintained := tracked - maintained:
         logger.critical("Found unmaintained packages", unmaintained=unmaintained)
