@@ -18,6 +18,7 @@ dependencies = [
     "pygit2",
 ]
 dynamic = ["version"]
+optional-dependencies.test = ["pytest"]
 
 [tool.hatch.version]
 source = "vcs"
