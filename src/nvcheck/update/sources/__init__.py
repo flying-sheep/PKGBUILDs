@@ -7,12 +7,12 @@ from . import cratesio, github, pypi
 if TYPE_CHECKING:
     from httpx import AsyncClient
 
-    from . import _source
+    from ._source import Source
 
 
 __all__ = ["msg_update"]
 
-SOURCES: tuple[type[_source.Source], ...] = (
+SOURCES: tuple[type[Source], ...] = (
     github.Source,
     pypi.Source,
     cratesio.Source,
