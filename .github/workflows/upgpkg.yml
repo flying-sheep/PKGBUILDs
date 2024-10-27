@@ -20,14 +20,10 @@ jobs:
         dir_names: true
         dir_names_include_files: pkgs/*
         files: pkgs/**
-    - name: List all changed files
-      env:
-        ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
-      run: |
-        for file in ${ALL_CHANGED_FILES}; do
-          echo "$file was changed"
-        done
-    #- name: Build Arch Linux package
-    #  uses: FFY00/build-arch-package@v1
-    #  with:
-    #      PKGBUILD: path/to/my/PKGBUILD
+    - uses: flying-sheep/check@v1
+      with:
+        success: ${{ fromJson(steps.changed-files.outputs.all_changed_files_count) == 1 }}
+    - name: Build Arch Linux package
+      uses: FFY00/build-arch-package@v1
+      with:
+        PKGBUILD: ${{ steps.changed-files.outputs.all_changed_files[0] }}/PKGBUILD
