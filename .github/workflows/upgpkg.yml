@@ -19,7 +19,7 @@ jobs:
       with:
         dir_names: true
         dir_names_include_files: pkgs/*
-        files: pkgs/*
+        files: pkgs/**
     - name: List all changed files
       env:
         ALL_CHANGED_FILES: ${{ steps.changed-files.outputs.all_changed_files }}
