@@ -13,7 +13,7 @@ pkgbase = python-zarr
 	depends = python-asciitree
 	depends = python-numpy
 	depends = python-fasteners
-	depends = python-numcodecs>=0.6.4
+	depends = python-numcodecs
 	source = https://files.pythonhosted.org/packages/source/z/zarr/zarr-2.18.3.tar.gz
 	sha256sums = 2580d8cb6dd84621771a10d31c4d777dca8a27706a1a89b29f42d2d37e2df5ce
 
