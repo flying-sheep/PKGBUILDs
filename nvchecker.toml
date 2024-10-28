@@ -25,6 +25,10 @@ pypi = "fpdf"
 source = "pypi"
 pypi = "get-version"
 
+[python-numcodecs]
+source = "pypi"
+pypi = "numcodecs"
+
 [python-qtico]
 source = "pypi"
 pypi = "qtico"
