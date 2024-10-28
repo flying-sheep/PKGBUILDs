@@ -32,7 +32,7 @@ jobs:
     - uses: edlanglois/pkgbuild-action@v1
       id: makepkg
       with:
-        pkgdir: ${{ steps.changed-files.outputs.all_changed_files }}/PKGBUILD
+        pkgdir: ${{ steps.changed-files.outputs.all_changed_files }}
         aurDeps: true
     - uses: actions/upload-artifact@v4
       with:
