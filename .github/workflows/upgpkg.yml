@@ -20,9 +20,8 @@ jobs:
         fetch-depth: 0
         filter: blob:none
     - run: ls
-    - name: Get changed files
+    - uses: tj-actions/changed-files@v45
       id: changed-files
-      uses: tj-actions/changed-files@v45
       with:
         dir_names: true
         dir_names_include_files: pkgs/*
@@ -30,7 +29,11 @@ jobs:
     - uses: flying-sheep/check@v1
       with:
         success: ${{ fromJson(steps.changed-files.outputs.all_changed_files_count) == 1 }}
-    - name: Build Arch Linux package
-      uses: FFY00/build-arch-package@v1
+    - uses: edlanglois/pkgbuild-action@v1
+      id: makepkg
       with:
-        PKGBUILD: ${{ github.workspace }}/${{ steps.changed-files.outputs.all_changed_files }}/PKGBUILD
+        pkgdir: ${{ steps.changed-files.outputs.all_changed_files }}/PKGBUILD
+        aurDeps: true
+    - uses: actions/upload-artifact@v2
+      with:
+        path: ${{ steps.makepkg.outputs.pkgfile0 }}
