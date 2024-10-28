@@ -33,4 +33,4 @@ jobs:
     - name: Build Arch Linux package
       uses: FFY00/build-arch-package@v1
       with:
-        PKGBUILD: ${{ steps.changed-files.outputs.all_changed_files }}/PKGBUILD
+        PKGBUILD: ${{ github.workspace }}/${{ steps.changed-files.outputs.all_changed_files }}/PKGBUILD
