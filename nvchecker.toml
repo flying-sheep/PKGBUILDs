@@ -33,6 +33,10 @@ pypi = "numcodecs"
 source = "pypi"
 pypi = "qtico"
 
+[python-zarr]
+source = "pypi"
+pypi = "zarr"
+
 [resvg]
 source = "cratesio"
 cratesio = "resvg"
