@@ -40,6 +40,9 @@ pypi = "fpdf"
 source = "pypi"
 pypi = "get-version"
 
+[python-headerparser]
+source = 'pypi'
+
 [python-ipynbname]
 source = 'pypi'
 
