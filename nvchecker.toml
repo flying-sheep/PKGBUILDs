@@ -68,6 +68,9 @@ source = 'pypi'
 [python-plotnine]
 source = 'pypi'
 
+[python-pytest-pycharm]
+source = 'pypi'
+
 [python-qtico]
 source = "pypi"
 pypi = "qtico"
