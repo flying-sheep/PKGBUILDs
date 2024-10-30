@@ -22,6 +22,9 @@ source = 'pypi'
 source = "pypi"
 pypi = "array-api-compat"
 
+[python-asyncore-wsgi]
+source = 'pypi'
+
 [python-entry-points-txt]
 source = 'pypi'
 
