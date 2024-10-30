@@ -135,6 +135,9 @@ source = 'pypi'
 [python-scanpydoc]
 source = 'pypi'
 
+[python-smart-progress]
+source = 'pypi'
+
 [python-soundcard-git]
 source = 'pypi'
 
