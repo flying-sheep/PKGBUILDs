@@ -120,6 +120,9 @@ source = 'pypi'
 [python-sadisplay]
 source = 'pypi'
 
+[python-scanpydoc]
+source = 'pypi'
+
 [python-soundcard-git]
 source = 'pypi'
 
