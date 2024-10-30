@@ -11,7 +11,7 @@ import structlog
 if TYPE_CHECKING:
     import os
     from collections.abc import Iterable, KeysView, Sequence
-    from typing import TypeVar
+    from typing import Literal, TypeVar
 
     StrOrBytesPath = str | bytes | os.PathLike[str] | os.PathLike[bytes]
 
@@ -29,11 +29,13 @@ def ordered_set(iterable: Iterable[T]) -> KeysView[T]:
 
 class VerboseCalledProcessError(subprocess.CalledProcessError):
     def __str__(self) -> str:
-        return (
-            f"{super()}\n"
-            f"stdout:\n{indent(self.stdout, '\t')}\n"
-            f"stderr:\n{indent(self.stderr, '\t')}"
-        )
+        return f"{super().__str__()}\n{self._fmt('stdout')}\n{self._fmt('stderr')}"
+
+    def _fmt(self, what: Literal["stdout", "stderr"]) -> str:
+        decoded = getattr(self, what).decode("utf-8", "backslashreplace")
+        if len(decoded) < 80:
+            return f"{what}: {decoded}"
+        return f"{what}:\n{indent(decoded, '\t')}"
 
 
 async def run_checked(
