@@ -31,4 +31,3 @@ package() {
 	cd "$srcdir/SoundCard"
 	python -m installer --destdir="$pkgdir" dist/*.whl
 }
-
