@@ -17,6 +17,9 @@ source = 'pypi'
 [python-altgraph]
 source = 'pypi'
 
+[python-anglerfish]
+source = 'pypi'
+
 [python-anndata]
 source = "pypi"
 pypi = "anndata"
