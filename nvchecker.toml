@@ -90,6 +90,9 @@ source = 'pypi'
 source = "pypi"
 pypi = "qtico"
 
+[python-requests_download]
+source = 'pypi'
+
 [python-sadisplay]
 source = 'pypi'
 
