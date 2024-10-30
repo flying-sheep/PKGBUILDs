@@ -54,8 +54,9 @@ source = 'pypi'
 pypi = 'conda'
 
 [python-conda-libmamba-solver]
-source = 'pypi'
-pypi = 'conda-libmamba-solver'
+source = 'github'
+github = 'conda/conda-libmamba-solver'
+use_latest_release = true
 
 [python-connection_pool]
 source = 'pypi'
