@@ -156,6 +156,9 @@ source = 'pypi'
 [python-tbvaccine]
 source = 'pypi'
 
+[python-tuna]
+source = 'pypi'
+
 [python-web-pdb]
 source = 'pypi'
 
