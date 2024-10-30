@@ -46,6 +46,9 @@ source = 'pypi'
 [python-itertools-len]
 source = 'pypi'
 
+[python-legacy-api-wrap]
+source = 'pypi'
+
 [python-libmamba]
 source = 'pypi'
 
