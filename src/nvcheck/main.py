@@ -16,9 +16,13 @@ from .utils import vercmp
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+    from typing import Literal
+
+    from nvchecker.util import RichResult
+
 
 logger = cast(
-    structlog.types.FilteringBoundLogger, structlog.get_logger(logger_name=__name__)
+    structlog.types.FilteringBoundLogger, structlog.get_logger(logger_name="nvcheck")
 )
 
 
@@ -41,6 +45,11 @@ def get_parser() -> ArgumentParser:
     )
 
     return parser
+
+
+def ver_key(item: tuple[str, tuple[str, RichResult]]) -> Literal[0, -1, 1]:
+    _, (oldver, new) = item
+    return vercmp(new.version, oldver)
 
 
 async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
@@ -67,8 +76,11 @@ async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
     groups = {
         group: dict(vers)
         for group, vers in groupby(
-            ((name, (old_vers[name], new)) for name, new in new_vers.items()),
-            key=lambda i: vercmp(i[1][1].version, i[1][0]),
+            sorted(
+                ((name, (old_vers[name], new)) for name, new in new_vers.items()),
+                key=ver_key,
+            ),
+            key=ver_key,
         )
     }
     assert groups.keys() <= {-1, 0, 1}

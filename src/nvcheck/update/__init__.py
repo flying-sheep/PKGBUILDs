@@ -28,7 +28,8 @@ if TYPE_CHECKING:
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger, structlog.get_logger(logger_name=__name__)
+    structlog.types.FilteringBoundLogger,
+    structlog.get_logger(logger_name="nvcheck.update"),
 )
 
 
@@ -86,7 +87,7 @@ class Updater:
             msg = await self.msg_update(name, oldver, new)
             await self.upsert_pr(name, oldver, new, msg)
         except* RuntimeError as eg:
-            logger.error("Error updating", name=name, error=str(eg))
+            logger.error("Error updating", name=name, error=eg)
 
     async def msg_update(self, name: str, oldver: str, new: RichResult) -> str:
         if new.url is None:

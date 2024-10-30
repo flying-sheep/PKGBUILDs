@@ -11,7 +11,7 @@ from nvchecker.ctxvars import proxy as ctx_proxy
 from nvchecker.util import EntryWaiter, RichResult
 
 if TYPE_CHECKING:
-    from collections.abc import Coroutine, Mapping
+    from collections.abc import Mapping
     from pathlib import Path
     from typing import IO, Literal
 
@@ -70,20 +70,13 @@ async def run_nvchecker(
     )
 
     oldvers_rich = {n: RichResult(version=v) for n, v in oldvers.items()}
-    result_coro = nvchecker.core.process_result(
-        oldvers_rich, result_q, entry_waiter, verbose=False
+    result_task = asyncio.create_task(
+        nvchecker.core.process_result(
+            oldvers_rich, result_q, entry_waiter, verbose=False
+        )
     )
-    runner_coro = nvchecker.core.run_tasks(futures)
+    for runner_coro in asyncio.as_completed(futures):
+        await runner_coro
 
-    return await run(result_coro, runner_coro)
-
-
-async def run(
-    result_coro: Coroutine[None, None, tuple[ResultData, bool]],
-    runner_coro: Coroutine[None, None, None],
-) -> tuple[ResultData, bool]:
-    result_fu = asyncio.create_task(result_coro)
-    runner_fu = asyncio.create_task(runner_coro)
-    await runner_fu
-    result_fu.cancel()
-    return await result_fu
+    result_task.cancel()
+    return await result_task
