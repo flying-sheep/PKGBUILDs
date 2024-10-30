@@ -2,6 +2,7 @@
 /pkgs/*/pkg/
 /pkgs/*/*.pkg.*
 /pkgs/*/*.tar.gz
+/pkgs/*/*.log
 
 __pycache__/
 
