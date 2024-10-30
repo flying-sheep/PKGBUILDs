@@ -63,14 +63,16 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         failed = old_vers.keys() - new_vers.keys()
         logger.error("some packages failed to update", failed=failed)
 
+    # group by version comparison.
+    # -1: upstream is lower, 0: equal, 1: upstream is higher
     groups = {
-        group: dict(names)
-        for group, names in groupby(
+        group: dict(vers)
+        for group, vers in groupby(
             ((name, (old_vers[name], new)) for name, new in new_vers.items()),
             key=lambda i: vercmp(i[1][1].version, i[1][0]),
         )
     }
-    assert groups.keys() == {-1, 0, 1}
+    assert groups.keys() <= {-1, 0, 1}
 
     if groups[-1]:
         pkgs = {
