@@ -49,6 +49,9 @@ source = 'pypi'
 [python-itertools-len]
 source = 'pypi'
 
+[python-jupyter_kernel_test]
+source = 'pypi'
+
 [python-legacy-api-wrap]
 source = 'pypi'
 
