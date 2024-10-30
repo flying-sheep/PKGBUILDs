@@ -83,10 +83,9 @@ class Updater:
             self.known_prs.append(pr)
         try:
             msg = await self.msg_update(name, oldver, new)
-        except RuntimeError as e:
-            logger.error("Error updating", name=name, error=str(e))
-            return
-        await self.upsert_pr(name, oldver, new, msg)
+            await self.upsert_pr(name, oldver, new, msg)
+        except* RuntimeError as eg:
+            logger.error("Error updating", name=name, error=str(eg))
 
     async def msg_update(self, name: str, oldver: str, new: RichResult) -> str:
         if new.url is None:

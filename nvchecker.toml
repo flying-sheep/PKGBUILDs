@@ -7,7 +7,7 @@ pypi = 'jupyterlab-git'
 
 [python-adjusttext]
 source = 'pypi'
-pypi = 'adjustText'
+pypi = 'adjusttext'
 
 [python-aiomanhole]
 source = 'pypi'

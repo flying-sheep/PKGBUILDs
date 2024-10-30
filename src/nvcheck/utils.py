@@ -27,7 +27,7 @@ def ordered_set(iterable: Iterable[T]) -> KeysView[T]:
     return dict.fromkeys(iterable).keys()
 
 
-class VerboseCalledProcessError(subprocess.CalledProcessError):
+class VerboseCalledProcessError(subprocess.CalledProcessError, RuntimeError):
     def __str__(self) -> str:
         return f"{super().__str__()}\n{self._fmt('stdout')}\n{self._fmt('stderr')}"
 
