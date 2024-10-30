@@ -34,6 +34,9 @@ source = 'pypi'
 [python-itertools-len]
 source = 'pypi'
 
+[python-louvain]
+source = 'pypi'
+
 [python-modulegraph]
 source = 'pypi'
 
