@@ -55,6 +55,9 @@ source = 'pypi'
 [python-headerparser]
 source = 'pypi'
 
+[python-installer-git]
+source = 'pypi'
+
 [python-ipynbname]
 source = 'pypi'
 
