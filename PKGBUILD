@@ -58,7 +58,7 @@ build() {
 
 package() {
   cd "$srcdir/$_name-$pkgver"
-  
+
   # install package contents
   python -m installer --destdir "$pkgdir" "$srcdir/$_name-$pkgver/dist/$_name-$pkgver-"*.whl
   # patch binary
