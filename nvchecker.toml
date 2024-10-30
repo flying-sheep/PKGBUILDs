@@ -75,6 +75,9 @@ source = 'pypi'
 [python-soundcard-git]
 source = 'pypi'
 
+[python-sphinxcontrib-sadisplay]
+source = 'pypi'
+
 [python-stdeb]
 source = 'pypi'
 
