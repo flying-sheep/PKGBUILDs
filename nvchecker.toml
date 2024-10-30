@@ -82,10 +82,6 @@ pypi = 'fpdf'
 source = 'pypi'
 pypi = 'get-version'
 
-[python-goatools]
-source = 'pypi'
-pypi = 'goatools'
-
 [python-hatch-docstring-description]
 source = 'pypi'
 pypi = 'hatch-docstring-description'
