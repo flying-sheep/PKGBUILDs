@@ -11,6 +11,9 @@ source = 'pypi'
 [python-alembic-autogenerate-enums]
 source = 'pypi'
 
+[python-altgraph]
+source = 'pypi'
+
 [python-anndata]
 source = "pypi"
 pypi = "anndata"
