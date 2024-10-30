@@ -274,6 +274,10 @@ pypi = 'zarr'
 source = 'cratesio'
 cratesio = 'resvg'
 
+[scanpy]
+source = 'pypi'
+pypi = 'scanpy'
+
 [terrafirma]
 source = 'github'
 github = 'mrkite/TerraFirma'
