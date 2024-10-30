@@ -40,6 +40,9 @@ source = 'pypi'
 [python-itertools-len]
 source = 'pypi'
 
+[python-libmamba]
+source = 'pypi'
+
 [python-loompy]
 source = 'pypi'
 
