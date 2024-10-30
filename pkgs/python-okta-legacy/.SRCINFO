@@ -15,4 +15,3 @@ pkgbase = python-okta-legacy
 	sha1sums = 152715bef918b10f6b8c420b2c89a7c4d44a6f3a
 
 pkgname = python-okta-legacy
-

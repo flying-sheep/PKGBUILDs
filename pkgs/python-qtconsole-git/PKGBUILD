@@ -48,11 +48,10 @@ package() {
 	cd "$srcdir/qtconsole"
 	python -m installer --destdir="$pkgdir" dist/*.whl
 	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
-	
+
 	cd examples
 	# FS#47046 fix .desktop icon
 	local _python3="$(readlink /usr/bin/python3)"
 	sed -i "s|^Icon=.*$|Icon=/usr/lib/$_python3/site-packages/qtconsole/resources/icon/JupyterConsole.svg|" jupyter-qtconsole.desktop
 	install -Dm644 jupyter-qtconsole.desktop "$pkgdir/usr/share/applications/jupyter-qtconsole.desktop"
 }
-

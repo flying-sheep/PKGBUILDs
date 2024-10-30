@@ -12,4 +12,3 @@ pkgbase = python-falcon-cors
 	sha256sums = 1788ec5c31b5a39240f7979a7c7170a33ea4952dc97e151858a82dcde1a9fe8a
 
 pkgname = python-falcon-cors
-
