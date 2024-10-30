@@ -28,6 +28,9 @@ source = 'pypi'
 [python-entry-points-txt]
 source = 'pypi'
 
+[python-falcon-cors]
+source = 'pypi'
+
 [python-fintech]
 source = "pypi"
 pypi = "fintech"
