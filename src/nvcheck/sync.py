@@ -135,7 +135,7 @@ async def pkg_mod(
     segment_list = list(segments.values())
     if cmd == "add":
         assert source is not None
-        insert_idx = sorted(chain(segments.keys(), name)).index(name)
+        insert_idx = sorted(chain(segments.keys(), [name])).index(name)
         segment_list.insert(insert_idx, f"[{name}]\nsource = '{source}'")
     elif cmd == "remove":
         assert source is None
