@@ -81,10 +81,11 @@ async def pkg_mod(
 ) -> None:
     match cmd:
         case "remove":
-            await run_checked("git", "rm", "-rf", f"pkgs/{name}", cmd_name="git rm")
-            await run_checked(
-                "git", "commit", "-m", f"remove {name}", cmd_name="git commit"
-            )
+            for args in [
+                ("git", "rm", "-rf", f"pkgs/{name}"),
+                ("git", "commit", "-m", f"remove {name}"),
+            ]:
+                await run_checked(*args, cmd_name=args[:2], cwd=repo_dir)
         case "add" | "push":
             await run_checked(
                 *(cmd_name := ("git", "subtree", cmd)),
@@ -92,6 +93,7 @@ async def pkg_mod(
                 f"ssh://aur@aur.archlinux.org/{name}.git",
                 "master",
                 cmd_name=cmd_name,
+                cwd=repo_dir,
             )
         case _:
             msg = f"unknown cmd: {cmd}"
