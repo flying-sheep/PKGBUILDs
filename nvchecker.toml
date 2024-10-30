@@ -5,6 +5,9 @@ httplib = "httpx"
 source = "pypi"
 pypi = "jupyterlab-git"
 
+[python-aiomanhole]
+source = 'pypi'
+
 [python-anndata]
 source = "pypi"
 pypi = "anndata"
