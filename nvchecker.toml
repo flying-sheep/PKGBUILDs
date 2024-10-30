@@ -153,6 +153,9 @@ source = 'pypi'
 [python-reretry]
 source = 'pypi'
 
+[python-rserve]
+source = 'pypi'
+
 [python-sadisplay]
 source = 'pypi'
 
