@@ -63,7 +63,6 @@ async def add_untracked(
         await pkg_mod(
             pkg, "add", source=source, repo_dir=repo_dir, nvchecker_path=nvchecker_path
         )
-        assert False, "TODO"
     if unhandled:
         logger.critical("Source could not inferred for packages", unhandled=unhandled)
 
