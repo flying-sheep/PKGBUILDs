@@ -180,6 +180,9 @@ source = 'pypi'
 [python-tbvaccine]
 source = 'pypi'
 
+[python-tikzplotlib-git]
+source = 'pypi'
+
 [python-tiledb]
 source = 'pypi'
 
