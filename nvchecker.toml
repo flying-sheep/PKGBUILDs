@@ -25,9 +25,17 @@ pypi = "fpdf"
 source = "pypi"
 pypi = "get-version"
 
+[python-numcodecs]
+source = "pypi"
+pypi = "numcodecs"
+
 [python-qtico]
 source = "pypi"
 pypi = "qtico"
+
+[python-zarr]
+source = "pypi"
+pypi = "zarr"
 
 [resvg]
 source = "cratesio"
