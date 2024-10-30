@@ -13,7 +13,7 @@ def test_parse_nvchecker_toml() -> None:
 
     conf_segment_name, conf_segment = segments[0]
     assert conf_segment_name == "__config__"
-    assert conf_segment == '[__config__]\nhttplib = "httpx"\n'
+    assert conf_segment == "[__config__]\nhttplib = 'httpx'\n"
 
     anndata_segment = next(s for n, s in segments if n == "python-anndata")
-    assert anndata_segment == '[python-anndata]\nsource = "pypi"\npypi = "anndata"\n'
+    assert anndata_segment == "[python-anndata]\nsource = 'pypi'\npypi = 'anndata'\n"
