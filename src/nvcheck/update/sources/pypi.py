@@ -56,12 +56,15 @@ async def get_reqs(
     resp.raise_for_status()
     resp_json = resp.json()
 
-    url = next(
-        f["url"]
+    url_gen = (
+        cast(str, f["url"])
         for f in resp_json["files"]
         if f["filename"].startswith(f"{name.replace('-', '_')}-{version}")
         and f["data-dist-info-metadata"]
     )
+    if (url := next(url_gen, None)) is None:
+        msg = f"no metadata for {name} {version} at {url}"
+        raise RuntimeError(msg)
     resp = await http_client.get(f"{url}.metadata", headers=headers)
     resp.raise_for_status()
     metadata, _ = parse_email(resp.text)

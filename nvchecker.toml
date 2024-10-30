@@ -204,7 +204,7 @@ pypi = 'reretry'
 
 [python-rserve]
 source = 'pypi'
-pypi = 'pyRserve'
+pypi = 'pyrserve'
 
 [python-sadisplay]
 source = 'pypi'
