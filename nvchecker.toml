@@ -52,6 +52,9 @@ source = 'pypi'
 [python-louvain]
 source = 'pypi'
 
+[python-mizani]
+source = 'pypi'
+
 [python-modulegraph]
 source = 'pypi'
 
