@@ -39,6 +39,9 @@ pypi = "qtico"
 [python-wheel-filename]
 source = 'pypi'
 
+[python-wheel-inspect]
+source = 'pypi'
+
 [python-zarr]
 source = "pypi"
 pypi = "zarr"
