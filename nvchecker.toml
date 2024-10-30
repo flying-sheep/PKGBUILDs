@@ -46,6 +46,9 @@ pypi = "get-version"
 [python-goatools]
 source = 'pypi'
 
+[python-hatch-docstring-description]
+source = 'pypi'
+
 [python-headerparser]
 source = 'pypi'
 
