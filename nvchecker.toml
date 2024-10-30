@@ -36,6 +36,9 @@ pypi = "numcodecs"
 source = "pypi"
 pypi = "qtico"
 
+[python-stdeb]
+source = 'pypi'
+
 [python-tbvaccine]
 source = 'pypi'
 
