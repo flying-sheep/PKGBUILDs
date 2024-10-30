@@ -40,6 +40,9 @@ source = 'pypi'
 [python-conda]
 source = 'pypi'
 
+[python-conda-libmamba-solver]
+source = 'pypi'
+
 [python-connection_pool]
 source = 'pypi'
 
