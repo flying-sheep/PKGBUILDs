@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import asyncio
 from itertools import chain, pairwise
 from typing import TYPE_CHECKING, cast, overload
 
@@ -13,6 +12,7 @@ from aurweb_client.models.get_rpc_v5_search_arg_by import GetRpcV5SearchArgBy as
 from aurweb_client.types import Unset
 
 from .update import COMMON_ARGS
+from .utils import run_checked
 
 if TYPE_CHECKING:
     from collections.abc import Set as AbstractSet
@@ -94,11 +94,7 @@ async def pkg_mod(
         case _:
             msg = f"unknown cmd: {cmd}"
             raise RuntimeError(msg)
-    proc = await asyncio.subprocess.create_subprocess_exec(
-        *full_cmd, *args, cwd=repo_dir
-    )
-    if (await proc.wait()) != 0:
-        raise RuntimeError(f"{' '.join(full_cmd)} failed")
+    await run_checked(*full_cmd, *args, cmd_name=full_cmd)
 
     if cmd not in {"add", "remove"}:
         assert source is None

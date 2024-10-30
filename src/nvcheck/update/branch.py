@@ -10,6 +10,8 @@ import pygit2
 import structlog
 from pygit2.repository import Repository
 
+from ..utils import run_checked
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
 
@@ -47,13 +49,13 @@ async def create_branch(
         for i, line in enumerate(lines):
             if line.startswith("pkgver="):
                 lines[i] = line.replace(line.split("=", 1)[1], newver)
-                break
+            if line.startswith("pkgrel="):
+                lines[i] = line.replace(line.split("=", 1)[1], "1")
         (pkg_dir / "PKGBUILD").write_text("\n".join(lines))
 
+        # run in order, “mksrcinfo” needs info from “updpkgsums”
         for cmd in ["updpkgsums", "mksrcinfo"]:
-            proc = await asyncio.create_subprocess_exec(cmd, cwd=pkg_dir)
-            if (await proc.wait()) != 0:
-                raise RuntimeError(f"{cmd} failed")
+            await run_checked(cmd, cwd=pkg_dir, log=True)
 
         parent = repo.head.target
         repo.index.add_all([pkg_dir_rel / p for p in ["PKGBUILD", ".SRCINFO"]])
