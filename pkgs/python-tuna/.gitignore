@@ -1,0 +1,8 @@
+/pkgs/*/src/
+/pkgs/*/pkg/
+/pkgs/*/*.pkg.*
+/pkgs/*/*.tar.gz
+
+__pycache__/
+
+/src/aurweb_client/
