@@ -25,6 +25,9 @@ pypi = "array-api-compat"
 [python-asyncore-wsgi]
 source = 'pypi'
 
+[python-better_exchook]
+source = 'pypi'
+
 [python-cmake-bin]
 source = 'pypi'
 
