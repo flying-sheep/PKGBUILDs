@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 from argparse import ArgumentParser, Namespace
-from asyncio import run
 from dataclasses import dataclass, field
 from itertools import groupby
 from pathlib import Path
@@ -44,7 +43,7 @@ def get_parser() -> ArgumentParser:
     return parser
 
 
-def main(argv: Sequence[str] | None = None) -> int | str | None:
+async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
     args = get_parser().parse_args(argv, Args())
 
     setup_logging()
@@ -52,11 +51,11 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
     nvchecker_path = args.dir / "nvchecker.toml"
     pkgs_dir = args.dir / "pkgs"
 
-    run(sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir))
+    await sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir)
 
     old_vers = read_vers(pkgs_dir)
     try:
-        new_vers, has_failures = run_nvchecker(nvchecker_path, old_vers)
+        new_vers, has_failures = await run_nvchecker(nvchecker_path, old_vers)
     except FileLoadError as e:
         return str(e)
     if has_failures:
@@ -79,4 +78,10 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
             name: f"{old} > {new.version}" for name, (old, new) in groups[-1].items()
         }
         logger.warning("Packages with higher version than upstream", pkgs=pkgs)
-    run(update_pkgbuilds(groups[1], repo_dir=args.dir, pkgs_dir=pkgs_dir))
+    await update_pkgbuilds(groups[1], repo_dir=args.dir, pkgs_dir=pkgs_dir)
+
+
+def main(argv: Sequence[str] | None = None) -> int | str | None:
+    from asyncio import run
+
+    run(main_async(argv))

@@ -32,7 +32,7 @@ def setup_logging() -> None:
     nvchecker.core.process_common_arguments(NVCheckerArgs())
 
 
-def run_nvchecker(
+async def run_nvchecker(
     cfg_file: Path, oldvers: Mapping[str, str]
 ) -> tuple[ResultData, bool]:
     """Run nvchecker and return a tuple of (result, has_failures).
@@ -75,7 +75,7 @@ def run_nvchecker(
     )
     runner_coro = nvchecker.core.run_tasks(futures)
 
-    return asyncio.run(run(result_coro, runner_coro))
+    return await run(result_coro, runner_coro)
 
 
 async def run(

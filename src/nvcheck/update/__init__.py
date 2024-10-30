@@ -50,6 +50,7 @@ COMMON_ARGS = CommonArgs(owner="flying-sheep", repo="pkgbuilds")
 async def update_pkgbuilds(
     updated: Mapping[str, tuple[str, RichResult]], *, repo_dir: Path, pkgs_dir: Path
 ) -> None:
+    logger.info("Updating", packages=set(updated))
     updater = Updater(repo_dir, pkgs_dir)
     async with updater.http_client, asyncio.TaskGroup() as tg:
         for name, (oldver, new) in updated.items():
