@@ -81,7 +81,11 @@ class Updater:
             state="open",
         ):
             self.known_prs.append(pr)
-        msg = await self.msg_update(name, oldver, new)
+        try:
+            msg = await self.msg_update(name, oldver, new)
+        except RuntimeError as e:
+            logger.error("Error updating", name=name, error=str(e))
+            return
         await self.upsert_pr(name, oldver, new, msg)
 
     async def msg_update(self, name: str, oldver: str, new: RichResult) -> str:
