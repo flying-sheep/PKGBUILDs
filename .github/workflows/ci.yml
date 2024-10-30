@@ -8,16 +8,21 @@ on:
 
 jobs:
   linux:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux
+      options: --privileged
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup
     strategy:
       matrix:
         python-version: ['3.12']
     steps:
+    - run: pacman -Sy --noconfirm git
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
         filter: blob:none
-    - run: sudo apt install -y libalpm
     - uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
