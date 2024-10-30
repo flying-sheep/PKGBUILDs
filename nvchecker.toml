@@ -114,6 +114,9 @@ pypi = "qtico"
 [python-requests_download]
 source = 'pypi'
 
+[python-reretry]
+source = 'pypi'
+
 [python-sadisplay]
 source = 'pypi'
 
