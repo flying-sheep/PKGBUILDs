@@ -122,6 +122,9 @@ source = 'pypi'
 [python-psaw]
 source = 'pypi'
 
+[python-pubchempy]
+source = 'pypi'
+
 [python-pyefd]
 source = 'pypi'
 
