@@ -120,6 +120,7 @@ pypi = 'leidenalg'
 [python-libmamba]
 source = 'github'
 github = 'mamba-org/mamba'
+use_latest_release = true
 
 [python-loompy]
 source = 'pypi'
