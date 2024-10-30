@@ -28,6 +28,9 @@ pypi = "fpdf"
 source = "pypi"
 pypi = "get-version"
 
+[python-ipynbname]
+source = 'pypi'
+
 [python-itertools-len]
 source = 'pypi'
 
