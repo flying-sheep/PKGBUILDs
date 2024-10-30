@@ -9,10 +9,16 @@ on:
 jobs:
   linux:
     runs-on: ubuntu-latest
+    container:
+      image: archlinux
+      options: --privileged
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup
     strategy:
       matrix:
         python-version: ['3.12']
     steps:
+    - run: pacman -Sy --noconfirm git base-devel
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
