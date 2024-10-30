@@ -32,6 +32,9 @@ source = 'pypi'
 source = "pypi"
 pypi = "numcodecs"
 
+[python-okta-legacy]
+source = 'pypi'
+
 [python-qtico]
 source = "pypi"
 pypi = "qtico"
