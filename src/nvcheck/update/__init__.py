@@ -87,7 +87,8 @@ class Updater:
             msg = await self.msg_update(name, oldver, new)
             await self.upsert_pr(name, oldver, new, msg)
         except* RuntimeError as eg:
-            logger.error("Error updating", name=name, error=eg)
+            e = eg.exceptions[0] if len(eg.exceptions) == 1 else eg
+            logger.error("Error updating", package=name, error=e)
 
     async def msg_update(self, name: str, oldver: str, new: RichResult) -> str:
         if new.url is None:
