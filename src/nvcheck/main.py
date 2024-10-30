@@ -4,7 +4,9 @@ from argparse import ArgumentParser, Namespace
 from asyncio import run
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
+
+import structlog
 
 from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
@@ -13,6 +15,10 @@ from .update import update_pkgbuilds
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
+
+logger = cast(
+    structlog.types.FilteringBoundLogger, structlog.get_logger(logger_name=__name__)
+)
 
 
 @dataclass
@@ -43,14 +49,17 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
 
     nvchecker_path = args.dir / "nvchecker.toml"
     pkgs_dir = args.dir / "pkgs"
-    old_vers = read_vers(pkgs_dir)
 
+    run(sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir))
+
+    old_vers = read_vers(pkgs_dir)
     try:
         new_vers, has_failures = run_nvchecker(nvchecker_path, old_vers)
     except FileLoadError as e:
         return str(e)
     if has_failures:
-        return "could not update versions"
+        failed = old_vers.keys() - new_vers.keys()
+        logger.error("some packages failed to update", failed=failed)
 
     updated = {
         name: (old_vers[name], new)
@@ -58,5 +67,4 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         if new.version != old_vers[name]
     }
 
-    run(sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir))
     run(update_pkgbuilds(updated, repo_dir=args.dir, pkgs_dir=pkgs_dir))
