@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import subprocess
 from collections.abc import Iterable
+from textwrap import indent
 from typing import TYPE_CHECKING, cast
 
 import structlog
@@ -26,6 +27,15 @@ def ordered_set(iterable: Iterable[T]) -> KeysView[T]:
     return dict.fromkeys(iterable).keys()
 
 
+class VerboseCalledProcessError(subprocess.CalledProcessError):
+    def __str__(self) -> str:
+        return (
+            f"{super()}\n"
+            f"stdout:\n{indent(self.stdout, '\t')}\n"
+            f"stderr:\n{indent(self.stderr, '\t')}"
+        )
+
+
 async def run_checked(
     cmd: StrOrBytesPath,
     *args: StrOrBytesPath,
@@ -47,7 +57,7 @@ async def run_checked(
     out, err = await proc.communicate()
     assert proc.returncode is not None
     if proc.returncode != 0:
-        raise subprocess.CalledProcessError(proc.returncode, cmd_name, out, err)
+        raise VerboseCalledProcessError(proc.returncode, cmd_name, out, err)
     if log:
         logger.info(f"Command {cmd_name} ran", out=out.decode(), err=err.decode())
     return out.decode()
