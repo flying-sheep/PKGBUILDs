@@ -83,6 +83,9 @@ source = 'pypi'
 [python-profimp]
 source = 'pypi'
 
+[python-psaw]
+source = 'pypi'
+
 [python-pyefd]
 source = 'pypi'
 
