@@ -79,6 +79,9 @@ source = 'pypi'
 [python-mizani]
 source = 'pypi'
 
+[python-mnnpy]
+source = 'pypi'
+
 [python-modulegraph]
 source = 'pypi'
 
