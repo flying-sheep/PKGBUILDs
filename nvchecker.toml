@@ -31,6 +31,9 @@ source = 'pypi'
 [python-conda]
 source = 'pypi'
 
+[python-connection_pool]
+source = 'pypi'
+
 [python-entry-points-txt]
 source = 'pypi'
 
