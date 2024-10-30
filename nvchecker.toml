@@ -60,6 +60,9 @@ source = 'pypi'
 source = "pypi"
 pypi = "qtico"
 
+[python-sadisplay]
+source = 'pypi'
+
 [python-stdeb]
 source = 'pypi'
 
