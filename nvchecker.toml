@@ -79,6 +79,9 @@ source = 'pypi'
 [python-legacy-api-wrap]
 source = 'pypi'
 
+[python-leidenalg]
+source = 'pypi'
+
 [python-libmamba]
 source = 'pypi'
 
