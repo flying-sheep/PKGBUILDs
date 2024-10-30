@@ -11,6 +11,7 @@ authors = [{ name = "Philipp Angerer", email = "philipp.angerer@helmholtz-munich
 readme = "README.md"
 dependencies = [
     "nvchecker[pypi]",
+    "pyalpm",
     "srcinfo",
     "httpx[http2,brotli,zstd]",
     "packaging",

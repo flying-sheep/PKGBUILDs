@@ -3,6 +3,7 @@ from __future__ import annotations
 from argparse import ArgumentParser, Namespace
 from asyncio import run
 from dataclasses import dataclass, field
+from itertools import groupby
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
@@ -12,6 +13,7 @@ from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
 from .sync import sync_maintained_pkgbuilds
 from .update import update_pkgbuilds
+from .utils import vercmp
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -61,10 +63,18 @@ def main(argv: Sequence[str] | None = None) -> int | str | None:
         failed = old_vers.keys() - new_vers.keys()
         logger.error("some packages failed to update", failed=failed)
 
-    updated = {
-        name: (old_vers[name], new)
-        for name, new in new_vers.items()
-        if new.version != old_vers[name]
+    groups = {
+        group: dict(names)
+        for group, names in groupby(
+            ((name, (old_vers[name], new)) for name, new in new_vers.items()),
+            key=lambda i: vercmp(i[1][1].version, i[1][0]),
+        )
     }
+    assert groups.keys() == {-1, 0, 1}
 
-    run(update_pkgbuilds(updated, repo_dir=args.dir, pkgs_dir=pkgs_dir))
+    if groups[-1]:
+        pkgs = {
+            name: f"{old} > {new.version}" for name, (old, new) in groups[-1].items()
+        }
+        logger.warning("Packages with higher version than upstream", pkgs=pkgs)
+    run(update_pkgbuilds(groups[1], repo_dir=args.dir, pkgs_dir=pkgs_dir))

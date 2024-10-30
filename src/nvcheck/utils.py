@@ -63,3 +63,9 @@ async def run_checked(
     if log:
         logger.info(f"Command {cmd_name} ran", out=out.decode(), err=err.decode())
     return out.decode()
+
+
+def vercmp(a: str, b: str, /) -> Literal[-1, 0, 1]:
+    from pyalpm import vercmp
+
+    return vercmp(a, b)
