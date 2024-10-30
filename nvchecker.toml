@@ -36,6 +36,9 @@ pypi = "numcodecs"
 source = "pypi"
 pypi = "qtico"
 
+[python-wheel-filename]
+source = 'pypi'
+
 [python-zarr]
 source = "pypi"
 pypi = "zarr"
