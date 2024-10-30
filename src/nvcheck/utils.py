@@ -38,7 +38,7 @@ async def run_checked(
     if cmd_name is None:
         cmd_name = cmd
     proc = await asyncio.create_subprocess_exec(
-        *cmd,
+        cmd,
         *args,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,

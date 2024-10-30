@@ -40,17 +40,45 @@ async def sync_maintained_pkgbuilds(nvchecker_path: Path, *, repo_dir: Path) -> 
     }
     tracked = entries.keys()
 
+    # these are run sequentially since the git operations can have race conditions
     if untracked := maintained - tracked:
-        logger.critical("Found untracked packages", untracked=untracked)
+        logger.warn("Found untracked packages", untracked=untracked)
         await add_untracked(untracked, repo_dir=repo_dir, nvchecker_path=nvchecker_path)
     if unmaintained := tracked - maintained:
-        logger.critical("Found unmaintained packages", unmaintained=unmaintained)
+        logger.warn("Found unmaintained packages", unmaintained=unmaintained)
+        await remove_unmaintained(
+            unmaintained, repo_dir=repo_dir, nvchecker_path=nvchecker_path
+        )
 
 
 async def add_untracked(
     untracked: AbstractSet[str], *, repo_dir: Path, nvchecker_path: Path
 ) -> None:
-    raise NotImplementedError("add_untracked not implemented")  # TODO
+    # run sequentially since the git operations can have race conditions
+    unhandled: set[str] = set()
+    for pkg in untracked:
+        if (source := infer_source(pkg)) is None:
+            unhandled.add(pkg)
+            continue
+        await pkg_mod(
+            pkg, "add", source=source, repo_dir=repo_dir, nvchecker_path=nvchecker_path
+        )
+    if unhandled:
+        logger.critical("Source could not inferred for packages", unhandled=unhandled)
+
+
+def infer_source(name: str) -> SourceName | None:
+    if name.startswith("python-") or name.startswith("jupyter-"):
+        return "pypi"
+    return None
+
+
+async def remove_unmaintained(
+    unmaintained: AbstractSet[str], *, repo_dir: Path, nvchecker_path: Path
+) -> None:
+    # run sequentially since the git operations can have race conditions
+    for pkg in unmaintained:
+        await pkg_mod(pkg, "remove", repo_dir=repo_dir, nvchecker_path=nvchecker_path)
 
 
 @overload
@@ -67,7 +95,7 @@ async def pkg_mod(
     name: str,
     cmd: Literal["push", "remove"],
     *,
-    source: None,
+    source: None = None,
     repo_dir: Path,
     nvchecker_path: Path,
 ) -> None: ...
@@ -75,7 +103,7 @@ async def pkg_mod(
     name: str,
     cmd: Literal["add", "push", "remove"],
     *,
-    source: SourceName | None,
+    source: SourceName | None = None,
     repo_dir: Path,
     nvchecker_path: Path,
 ) -> None:
