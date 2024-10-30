@@ -25,6 +25,9 @@ pypi = "fpdf"
 source = "pypi"
 pypi = "get-version"
 
+[python-itertools-len]
+source = 'pypi'
+
 [python-modulegraph]
 source = 'pypi'
 
