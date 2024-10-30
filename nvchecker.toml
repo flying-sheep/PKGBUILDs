@@ -74,6 +74,9 @@ source = 'pypi'
 [python-plotnine]
 source = 'pypi'
 
+[python-pyjnius]
+source = 'pypi'
+
 [python-pytest-pycharm]
 source = 'pypi'
 
