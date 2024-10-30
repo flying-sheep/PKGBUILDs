@@ -8,6 +8,9 @@ pypi = "jupyterlab-git"
 [python-aiomanhole]
 source = 'pypi'
 
+[python-alembic-autogenerate-enums]
+source = 'pypi'
+
 [python-anndata]
 source = "pypi"
 pypi = "anndata"
