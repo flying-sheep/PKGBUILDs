@@ -65,6 +65,9 @@ pypi = "numcodecs"
 [python-okta-legacy]
 source = 'pypi'
 
+[python-plotnine]
+source = 'pypi'
+
 [python-qtico]
 source = "pypi"
 pypi = "qtico"
