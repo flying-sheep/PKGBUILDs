@@ -171,6 +171,9 @@ source = 'pypi'
 [python-tbvaccine]
 source = 'pypi'
 
+[python-tiledb]
+source = 'pypi'
+
 [python-tuna]
 source = 'pypi'
 
