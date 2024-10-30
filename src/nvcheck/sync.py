@@ -142,11 +142,12 @@ async def pkg_mod(
         assert source is None
         remove_idx = list(segments.keys()).index(name)
         segment_list.pop(remove_idx)
-    nvchecker_path.write_text("\n".join(segment_list))
-    prep = "from" if cmd == "remove" else "to"
+    nvchecker_path.write_text("\n".join(segment_list) + "\n")
+    preposition = "from" if cmd == "remove" else "to"
     await run_checked(
         *(cmd_name := ("git", "commit")),
-        f"--message={cmd.title()} {name} {prep} nvchecker.toml",
+        nvchecker_path.relative_to(repo_dir),
+        f"--message={cmd.title()} {name} {preposition} nvchecker.toml",
         cwd=repo_dir,
         cmd_name=cmd_name,
     )
