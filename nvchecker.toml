@@ -162,6 +162,9 @@ source = 'pypi'
 [python-scanpydoc]
 source = 'pypi'
 
+[python-scvelo]
+source = 'pypi'
+
 [python-smart-progress]
 source = 'pypi'
 
