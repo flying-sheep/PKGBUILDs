@@ -12,6 +12,9 @@ source = 'pypi'
 source = "pypi"
 pypi = "anndata"
 
+[python-anndata2ri]
+source = 'pypi'
+
 [python-array-api-compat]
 source = "pypi"
 pypi = "array-api-compat"
