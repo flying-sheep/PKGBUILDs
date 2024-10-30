@@ -69,6 +69,9 @@ pypi = "qtico"
 [python-sadisplay]
 source = 'pypi'
 
+[python-soundcard-git]
+source = 'pypi'
+
 [python-stdeb]
 source = 'pypi'
 
