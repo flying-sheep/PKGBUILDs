@@ -72,6 +72,9 @@ source = 'pypi'
 [python-tbvaccine]
 source = 'pypi'
 
+[python-web-pdb]
+source = 'pypi'
+
 [python-wheel-filename]
 source = 'pypi'
 
