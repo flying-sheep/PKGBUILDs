@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-import tomllib
 from pathlib import Path
 
+from nvchecker.core import load_file
+
 HERE = Path(__file__).parent
-NVCHECKER_TOML = tomllib.loads((HERE.parent / "nvchecker.toml").read_text())
+NVCHECKER_TOML, _ = load_file(str(HERE.parent / "nvchecker.toml"), use_keymanager=False)
 
 
 def test_source_names() -> None:

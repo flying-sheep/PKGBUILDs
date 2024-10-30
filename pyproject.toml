@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "hatchling.build"
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling", "hatch-vcs", "openapi-python-client"]
 
 [project]
 name = "nvcheck"
@@ -16,6 +16,7 @@ dependencies = [
     "packaging",
     "githubkit",
     "pygit2",
+    "attrs",  # for generated client
 ]
 dynamic = ["version"]
 optional-dependencies.test = ["pytest"]
@@ -23,11 +24,15 @@ optional-dependencies.test = ["pytest"]
 [tool.hatch.version]
 source = "vcs"
 
+[tool.hatch.build.hooks.custom]
+[tool.hatch.build.targets.wheel]
+packages = ["src/nvcheck", "src/aurweb_client"]
+
 [tool.hatch.envs.default]
 installer = "uv"
 extra-dependencies = [ "types-pygit2" ]
-scripts.pkg-add = "git subtree add -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
-scripts.pkg-push = "git subtree push -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
+scripts.pkg-add = ""
+scripts.pkg-push = ""
 
 [tool.pytest.ini_options]
 addopts = [
@@ -35,6 +40,7 @@ addopts = [
     "--strict-markers",
     "--doctest-modules",
     "--pyargs",
+    "--ignore=hatch_build.py",
 ]
 filterwarnings = ["error"]
 xfail_strict = true
@@ -62,8 +68,10 @@ select = [
 ignore = [
     "TID252", # dot imports from parents are useful
 ]
+[tool.ruff.lint.per-file-ignores]
+"src/**" = ["PT015"] # `assert False`
 [tool.ruff.lint.isort]
-known-first-party = ["nvcheck"]
+known-first-party = ["nvcheck", "aurweb_client"]
 required-imports = ["from __future__ import annotations"]
 [tool.ruff.lint.flake8-type-checking]
 exempt-modules = []
