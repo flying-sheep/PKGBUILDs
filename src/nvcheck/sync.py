@@ -141,7 +141,7 @@ async def pkg_mod(
         assert source is None
         remove_idx = list(segments.keys()).index(name)
         segment_list.pop(remove_idx)
-    nvchecker_path.write_text("\n\n".join(segment_list))
+    nvchecker_path.write_text("\n".join(segment_list))
 
 
 def parse_nvchecker_toml(
@@ -154,7 +154,6 @@ def parse_nvchecker_toml(
         for (prev, prevstart), (_, nextstart) in pairwise(
             chain(name2start.items(), [("", len(lines))])
         )
-        if prev != "__config__"
     }
     if sorted(segments.keys()) != list(segments.keys()):
         msg = "unsorted tables in nvchecker.toml"
