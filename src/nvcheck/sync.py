@@ -81,20 +81,21 @@ async def pkg_mod(
 ) -> None:
     match cmd:
         case "remove":
-            full_cmd = ("git", "rm")
-            args = ("-rf", f"pkgs/{name}")
-            #  TODO: commit
+            await run_checked("git", "rm", "-rf", f"pkgs/{name}", cmd_name="git rm")
+            await run_checked(
+                "git", "commit", "-m", f"remove {name}", cmd_name="git commit"
+            )
         case "add" | "push":
-            full_cmd = ("git", "subtree", cmd)
-            args = (
+            await run_checked(
+                *(cmd_name := ("git", "subtree", cmd)),
                 f"--prefix=pkgs/{name}",
                 f"ssh://aur@aur.archlinux.org/{name}.git",
                 "master",
+                cmd_name=cmd_name,
             )
         case _:
             msg = f"unknown cmd: {cmd}"
             raise RuntimeError(msg)
-    await run_checked(*full_cmd, *args, cmd_name=full_cmd)
 
     if cmd not in {"add", "remove"}:
         assert source is None
