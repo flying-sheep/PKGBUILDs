@@ -1,0 +1,6 @@
+/src/
+/pkg/
+/*.pkg.*
+/LICENSE
+/*.tar.gz
+/*.log
