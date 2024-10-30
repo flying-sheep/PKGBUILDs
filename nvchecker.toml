@@ -1,221 +1,279 @@
 [__config__]
-httplib = "httpx"
+httplib = 'httpx'
 
 [jupyterlab-extension-jupyterlab_git]
-source = "pypi"
-pypi = "jupyterlab-git"
+source = 'pypi'
+pypi = 'jupyterlab-git'
 
 [python-adjusttext]
 source = 'pypi'
+pypi = 'adjustText'
 
 [python-aiomanhole]
 source = 'pypi'
+pypi = 'aiomanhole'
 
 [python-alembic-autogenerate-enums]
 source = 'pypi'
+pypi = 'alembic-autogenerate-enums'
 
 [python-altgraph]
 source = 'pypi'
+pypi = 'altgraph'
 
 [python-anglerfish]
 source = 'pypi'
+pypi = 'anglerfish'
 
 [python-anndata]
-source = "pypi"
-pypi = "anndata"
+source = 'pypi'
+pypi = 'anndata'
 
 [python-anndata2ri]
 source = 'pypi'
+pypi = 'anndata2ri'
 
 [python-array-api-compat]
-source = "pypi"
-pypi = "array-api-compat"
+source = 'pypi'
+pypi = 'array-api-compat'
 
 [python-asyncore-wsgi]
 source = 'pypi'
+pypi = 'asyncore-wsgi'
 
 [python-better_exchook]
 source = 'pypi'
+pypi = 'better-exchook'
 
 [python-cmake-bin]
 source = 'pypi'
+pypi = 'cmake'
 
 [python-conda]
 source = 'pypi'
+pypi = 'conda'
 
 [python-conda-libmamba-solver]
 source = 'pypi'
+pypi = 'conda-libmamba-solver'
 
 [python-connection_pool]
 source = 'pypi'
+pypi = 'connection-pool'
 
 [python-entry-points-txt]
 source = 'pypi'
+pypi = 'entry-points-txt'
 
 [python-falcon-cors]
 source = 'pypi'
+pypi = 'falcon-cors'
 
 [python-fintech]
-source = "pypi"
-pypi = "fintech"
+source = 'pypi'
+pypi = 'fintech'
 
 [python-fpdf]
-source = "pypi"
-pypi = "fpdf"
+source = 'pypi'
+pypi = 'fpdf'
 
 [python-get_version]
-source = "pypi"
-pypi = "get-version"
+source = 'pypi'
+pypi = 'get-version'
 
 [python-goatools]
 source = 'pypi'
+pypi = 'goatools'
 
 [python-hatch-docstring-description]
 source = 'pypi'
+pypi = 'hatch-docstring-description'
 
 [python-headerparser]
 source = 'pypi'
+pypi = 'headerparser'
 
 [python-installer-git]
 source = 'pypi'
+pypi = 'installer'
 
 [python-ipynbname]
 source = 'pypi'
+pypi = 'ipynbname'
 
 [python-itertools-len]
 source = 'pypi'
+pypi = 'itertools-len'
 
 [python-jupyter_kernel_test]
 source = 'pypi'
+pypi = 'jupyter-kernel-test'
 
 [python-legacy-api-wrap]
 source = 'pypi'
+pypi = 'legacy-api-wrap'
 
 [python-leidenalg]
 source = 'pypi'
+pypi = 'leidenalg'
 
 [python-libmamba]
-source = 'pypi'
+source = 'github'
+github = 'mamba-org/mamba'
 
 [python-loompy]
 source = 'pypi'
+pypi = 'loompy'
 
 [python-louvain]
 source = 'pypi'
+pypi = 'python-louvain'
 
 [python-louvain-igraph]
 source = 'pypi'
+pypi = 'louvain'
 
 [python-mizani]
 source = 'pypi'
+pypi = 'mizani'
 
 [python-mnnpy]
 source = 'pypi'
+pypi = 'mnnpy'
 
 [python-modulegraph]
 source = 'pypi'
+pypi = 'modulegraph'
 
 [python-ndjson-testrunner]
 source = 'pypi'
+pypi = 'ndjson-testrunner'
 
 [python-numcodecs]
-source = "pypi"
-pypi = "numcodecs"
+source = 'pypi'
+pypi = 'numcodecs'
 
 [python-okta-legacy]
 source = 'pypi'
+pypi = 'okta'
 
 [python-plotnine]
 source = 'pypi'
+pypi = 'plotnine'
 
 [python-profimp]
 source = 'pypi'
+pypi = 'profimp'
 
 [python-psaw]
 source = 'pypi'
+pypi = 'psaw'
 
 [python-pubchempy]
 source = 'pypi'
+pypi = 'pubchempy'
 
 [python-pyefd]
 source = 'pypi'
+pypi = 'pyefd'
 
 [python-pyjnius]
 source = 'pypi'
+pypi = 'pyjnius'
 
 [python-pytest-pycharm]
 source = 'pypi'
+pypi = 'pytest-pycharm'
 
 [python-qtconsole-git]
 source = 'pypi'
+pypi = 'qtconsole'
 
 [python-qtico]
-source = "pypi"
-pypi = "qtico"
+source = 'pypi'
+pypi = 'qtico'
 
 [python-requests_download]
 source = 'pypi'
+pypi = 'requests-download'
 
 [python-reretry]
 source = 'pypi'
+pypi = 'reretry'
 
 [python-rserve]
 source = 'pypi'
+pypi = 'pyRserve'
 
 [python-sadisplay]
 source = 'pypi'
+pypi = 'sadisplay'
 
 [python-scanpydoc]
 source = 'pypi'
+pypi = 'scanpydoc'
 
 [python-scvelo]
 source = 'pypi'
+pypi = 'scvelo'
 
 [python-smart-progress]
 source = 'pypi'
+pypi = 'smart-progress'
 
 [python-soundcard-git]
 source = 'pypi'
+pypi = 'soundcard'
 
 [python-spectate]
 source = 'pypi'
+pypi = 'spectate'
 
 [python-sphinxcontrib-sadisplay]
 source = 'pypi'
+pypi = 'sphinxcontrib-sadisplay'
 
 [python-stdeb]
 source = 'pypi'
+pypi = 'stdeb'
 
 [python-tbvaccine]
 source = 'pypi'
+pypi = 'tbvaccine'
 
 [python-tikzplotlib-git]
 source = 'pypi'
+pypi = 'tikzplotlib'
 
 [python-tiledb]
 source = 'pypi'
+pypi = 'tiledb'
 
 [python-tuna]
 source = 'pypi'
+pypi = 'tuna'
 
 [python-web-pdb]
 source = 'pypi'
+pypi = 'web-pdb'
 
 [python-wheel-filename]
 source = 'pypi'
+pypi = 'wheel-filename'
 
 [python-wheel-inspect]
 source = 'pypi'
+pypi = 'wheel-inspect'
 
 [python-zarr]
-source = "pypi"
-pypi = "zarr"
+source = 'pypi'
+pypi = 'zarr'
 
 [resvg]
-source = "cratesio"
-cratesio = "resvg"
+source = 'cratesio'
+cratesio = 'resvg'
 
 [terrafirma]
-source = "github"
-github = "mrkite/TerraFirma"
+source = 'github'
+github = 'mrkite/TerraFirma'
 use_latest_release = true
