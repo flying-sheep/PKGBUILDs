@@ -62,7 +62,7 @@ async def run_checked(
     if proc.returncode != 0:
         raise VerboseCalledProcessError(proc.returncode, cmd_name, out, err)
     if log:
-        logger.info(f"Command {cmd_name} ran", out=out.decode(), err=err.decode())
+        logger.debug(f"Command {cmd_name} ran", out=out.decode(), err=err.decode())
     return out.decode()
 
 

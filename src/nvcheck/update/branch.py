@@ -63,7 +63,7 @@ async def create_branch(
         repo.index.write()
         tree = repo.index.write_tree()
         if patch := repo.diff(parent, tree).patch:
-            logger.info("Committing", patch=patch)
+            logger.debug("Committing", patch=patch)
         else:
             msg = "nothing to commit"
             raise RuntimeError(msg)
