@@ -1,6 +1,10 @@
 [__config__]
 httplib = 'httpx'
 
+[camset]
+source = 'pypi'
+pypi = 'camset'
+
 [jupyterlab-extension-jupyterlab_git]
 source = 'pypi'
 pypi = 'jupyterlab-git'
