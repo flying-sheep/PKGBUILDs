@@ -11,6 +11,10 @@ github = 'DaehwanKimLab/hisat2'
 use_latest_release = true
 prefix = 'v'
 
+[jupyterlab-extension-ipycytoscape]
+source = 'pypi'
+pypi = 'ipycytoscape'
+
 [jupyterlab-extension-jupyterlab_git]
 source = 'pypi'
 pypi = 'jupyterlab-git'
