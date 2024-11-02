@@ -9,7 +9,7 @@ url='https://github.com/vtraag/libleidenalg'
 depends=(igraph)
 makedepends=(cmake)
 license=(GPL-3.0-or-later)
-source=("$url/archive/refs/tags/0.11.1.tar.gz")
+source=("$pkgname-$pkgver::$url/archive/refs/tags/0.11.1.tar.gz")
 sha256sums=('7d7392afd214c584e023cc2f0d0ac375f58575c32f2e49ba85062065f1637c7f')
 
 prepare() {
