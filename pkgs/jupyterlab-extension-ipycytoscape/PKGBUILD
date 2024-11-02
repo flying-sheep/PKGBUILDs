@@ -17,6 +17,7 @@ noextract=("$_wheel")
 
 package() {
 	python -m installer --destdir="$pkgdir" "$_wheel"
+	mv "$pkgdir/usr/etc" "$pkgdir/"
 
 	#cd "$srcdir/$_name-$pkgver"
 	#install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
