@@ -14,13 +14,13 @@ source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/$_nam
 sha256sums=('49a2dde0962fcecf120cb361cc293989489078eb29ba1d8c3d342a741e898b7e')
 
 build() {
-    cd "$srcdir/$_name-$pkgver"
-    export SETUPTOOLS_SCM_PRETEND_VERSION="${pkgver}"
-    python -m build --wheel --no-isolation
+	cd "$srcdir/$_name-$pkgver"
+	export SETUPTOOLS_SCM_PRETEND_VERSION="${pkgver}"
+	python -m build --wheel --no-isolation
 }
 
 package() {
-    cd "$srcdir/$_name-$pkgver"
-    python -m installer --destdir="$pkgdir" dist/*.whl
+c	d "$srcdir/$_name-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
 	install -Dm 644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
 }
