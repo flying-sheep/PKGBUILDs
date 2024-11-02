@@ -244,6 +244,7 @@ pypi = 'zarr'
 source = 'github'
 github = 'pachterlab/kallisto'
 use_latest_release = true
+prefix = 'v'
 
 [resvg]
 source = 'cratesio'
