@@ -85,12 +85,11 @@ async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
     }
     assert groups.keys() <= {-1, 0, 1}
 
-    if groups[-1]:
-        pkgs = {
-            name: f"{old} > {new.version}" for name, (old, new) in groups[-1].items()
-        }
+    if too_new := groups.get(-1):
+        pkgs = {name: f"{old} > {new.version}" for name, (old, new) in too_new.items()}
         logger.warning("Higher versions than upstream", pkgs=pkgs)
-    await update_pkgbuilds(groups[1], repo_dir=args.dir, pkgs_dir=pkgs_dir)
+    if upgraded := groups.get(1):
+        await update_pkgbuilds(upgraded, repo_dir=args.dir, pkgs_dir=pkgs_dir)
 
 
 def main(argv: Sequence[str] | None = None) -> int | str | None:
