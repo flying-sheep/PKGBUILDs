@@ -214,6 +214,7 @@ pypi = 'spectate'
 [python-sphinxcontrib-sadisplay]
 source = 'pypi'
 pypi = 'sphinxcontrib-sadisplay'
+use_pre_release = true
 
 [python-stdeb]
 source = 'pypi'
