@@ -240,6 +240,11 @@ pypi = 'wheel-inspect'
 source = 'pypi'
 pypi = 'zarr'
 
+[kallisto]
+source = 'github'
+github = 'pachterlab/kallisto'
+use_latest_release = true
+
 [resvg]
 source = 'cratesio'
 cratesio = 'resvg'
