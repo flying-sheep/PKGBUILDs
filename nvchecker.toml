@@ -5,6 +5,12 @@ httplib = 'httpx'
 source = 'pypi'
 pypi = 'jupyterlab-git'
 
+[kallisto]
+source = 'github'
+github = 'pachterlab/kallisto'
+use_latest_release = true
+prefix = 'v'
+
 [python-adjusttext]
 source = 'pypi'
 pypi = 'adjusttext'
@@ -239,12 +245,6 @@ pypi = 'wheel-inspect'
 [python-zarr]
 source = 'pypi'
 pypi = 'zarr'
-
-[kallisto]
-source = 'github'
-github = 'pachterlab/kallisto'
-use_latest_release = true
-prefix = 'v'
 
 [resvg]
 source = 'cratesio'
