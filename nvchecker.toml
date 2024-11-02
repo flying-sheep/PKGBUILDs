@@ -143,10 +143,6 @@ pypi = 'ndjson-testrunner'
 source = 'pypi'
 pypi = 'numcodecs'
 
-[python-okta-legacy]
-source = 'pypi'
-pypi = 'okta'
-
 [python-plotnine]
 source = 'pypi'
 pypi = 'plotnine'
