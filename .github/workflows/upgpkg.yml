@@ -13,6 +13,7 @@ jobs:
       options: --privileged
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup
+    if: ${{ !github.event.pull_request.draft }}
     steps:
     - run: pacman -Sy --noconfirm git
     - uses: actions/checkout@v4
