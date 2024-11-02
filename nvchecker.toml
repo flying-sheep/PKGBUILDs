@@ -248,6 +248,10 @@ cratesio = 'resvg'
 source = 'pypi'
 pypi = 'scanpy'
 
+[scanpy-scripts]
+source = 'pypi'
+pypi = 'scanpy-scripts'
+
 [terrafirma]
 source = 'github'
 github = 'mrkite/TerraFirma'
