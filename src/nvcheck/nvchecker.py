@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import os
 from argparse import Namespace
 from typing import TYPE_CHECKING
 from warnings import warn
@@ -13,6 +12,8 @@ import structlog
 from nvchecker.core import FileLoadError
 from nvchecker.ctxvars import proxy as ctx_proxy
 from nvchecker.util import EntryWaiter, RichResult
+
+from .update import get_token
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -66,7 +67,7 @@ async def run_nvchecker(
         if the config file is not valid
     """
     entries, options = nvchecker.core.load_file(str(cfg_file), use_keymanager=False)
-    if gh_token := os.environ.get("GH_TOKEN"):
+    if gh_token := get_token():
         options.keymanager.keys["github"] = gh_token
 
     if options.ver_files is not None:
