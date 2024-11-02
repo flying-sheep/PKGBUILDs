@@ -41,10 +41,6 @@ pypi = 'array-api-compat'
 source = 'pypi'
 pypi = 'asyncore-wsgi'
 
-[python-better_exchook]
-source = 'pypi'
-pypi = 'better-exchook'
-
 [python-cmake-bin]
 source = 'pypi'
 pypi = 'cmake'
@@ -89,10 +85,6 @@ pypi = 'hatch-docstring-description'
 [python-headerparser]
 source = 'pypi'
 pypi = 'headerparser'
-
-[python-installer-git]
-source = 'pypi'
-pypi = 'installer'
 
 [python-ipynbname]
 source = 'pypi'
@@ -218,10 +210,6 @@ pypi = 'scvelo'
 [python-smart-progress]
 source = 'pypi'
 pypi = 'smart-progress'
-
-[python-soundcard-git]
-source = 'pypi'
-pypi = 'soundcard'
 
 [python-spectate]
 source = 'pypi'
