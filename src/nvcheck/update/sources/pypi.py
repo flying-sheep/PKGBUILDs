@@ -19,6 +19,7 @@ if TYPE_CHECKING:
     from typing import Literal, TypeVar
 
     from httpx import AsyncClient
+    from nvchecker.util import RichResult
 
     T = TypeVar("T")
 
@@ -31,9 +32,14 @@ class Source(_source.Source):
         r"https://pypi\.org/project/(?P<name>[\w-]*)/(?P<version>[\d.]+)/"
     )
 
-    async def msg_update(self, name: str, versions: tuple[str, str]) -> str:
-        reqs = await get_all_reqs(self.http_client, name, versions)
-        return str(PyPIDepChanges(name, reqs))
+    async def msg_update(self, oldver: str, new: RichResult) -> str | None:
+        assert new.url is not None
+        if not (match := self.url_pat.fullmatch(new.url)):
+            return None
+        reqs = await get_all_reqs(
+            self.http_client, match["name"], (oldver, new.version)
+        )
+        return str(PyPIDepChanges(match["name"], reqs))
 
 
 async def get_all_reqs(
