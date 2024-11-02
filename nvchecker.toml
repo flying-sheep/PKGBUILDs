@@ -5,6 +5,12 @@ httplib = 'httpx'
 source = 'pypi'
 pypi = 'camset'
 
+[hisat2]
+source = 'github'
+github = 'DaehwanKimLab/hisat2'
+use_latest_release = true
+prefix = 'v'
+
 [jupyterlab-extension-jupyterlab_git]
 source = 'pypi'
 pypi = 'jupyterlab-git'
