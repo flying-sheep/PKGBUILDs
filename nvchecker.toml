@@ -147,10 +147,6 @@ pypi = 'plotnine'
 source = 'pypi'
 pypi = 'profimp'
 
-[python-psaw]
-source = 'pypi'
-pypi = 'psaw'
-
 [python-pubchempy]
 source = 'pypi'
 pypi = 'pubchempy'
