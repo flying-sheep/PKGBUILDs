@@ -171,10 +171,6 @@ pypi = 'pyjnius'
 source = 'pypi'
 pypi = 'pytest-pycharm'
 
-[python-qtconsole-git]
-source = 'pypi'
-pypi = 'qtconsole'
-
 [python-qtico]
 source = 'pypi'
 pypi = 'qtico'
