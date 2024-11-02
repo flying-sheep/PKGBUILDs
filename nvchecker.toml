@@ -21,10 +21,6 @@ pypi = 'alembic-autogenerate-enums'
 source = 'pypi'
 pypi = 'altgraph'
 
-[python-anglerfish]
-source = 'pypi'
-pypi = 'anglerfish'
-
 [python-anndata]
 source = 'pypi'
 pypi = 'anndata'
