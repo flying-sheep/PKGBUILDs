@@ -89,7 +89,7 @@ async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
         pkgs = {
             name: f"{old} > {new.version}" for name, (old, new) in groups[-1].items()
         }
-        logger.warning("Packages with higher version than upstream", pkgs=pkgs)
+        logger.warning("Higher versions than upstream", pkgs=pkgs)
     await update_pkgbuilds(groups[1], repo_dir=args.dir, pkgs_dir=pkgs_dir)
 
 

@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 from argparse import Namespace
 from typing import TYPE_CHECKING
 from warnings import warn
 
 import nvchecker.core
+import nvchecker.slogconf
+import structlog
 from nvchecker.core import FileLoadError
 from nvchecker.ctxvars import proxy as ctx_proxy
 from nvchecker.util import EntryWaiter, RichResult
@@ -29,7 +32,26 @@ class NVCheckerArgs(Namespace):
 
 
 def setup_logging() -> None:
-    nvchecker.core.process_common_arguments(NVCheckerArgs())
+    structlog.configure(
+        wrapper_class=structlog.make_filtering_bound_logger(logging.INFO)
+    )
+    # nvchecker.core.process_common_arguments(NVCheckerArgs())
+    # processors = list(structlog.get_config()["processors"])
+    # processors.insert(
+    #    processors.index(nvchecker.slogconf.stdlib_renderer), _downgrade_http
+    # )
+    # structlog.configure(processors=processors)
+
+
+def _downgrade_http(
+    logger: structlog.types.WrappedLogger,
+    method_name: str,
+    event_dict: structlog.typing.EventDict,
+) -> structlog.typing.ProcessorReturnValue:
+    assert False, event_dict
+
+    return event_dict
+    raise structlog.DropEvent
 
 
 async def run_nvchecker(
