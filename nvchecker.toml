@@ -11,6 +11,11 @@ github = 'pachterlab/kallisto'
 use_latest_release = true
 prefix = 'v'
 
+[libleidenalg]
+source = 'github'
+github = 'vtraag/libleidenalg'
+use_latest_release = true
+
 [python-adjusttext]
 source = 'pypi'
 pypi = 'adjusttext'
