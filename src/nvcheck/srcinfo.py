@@ -9,15 +9,22 @@ if TYPE_CHECKING:
     from collections.abc import Generator
 
 
-def read_vers(dir: Path | None = None) -> dict[str, str]:
+VCS_PROVIDERS = frozenset({"bzr", "cvs", "darcs", "git", "hg", "svn"})
+
+
+def read_vers(dir: Path | None = None, *, include_vcs: bool = False) -> dict[str, str]:
     if dir is None:
         dir = Path()
-    return dict(_read_vers(dir))
+    return dict(_read_vers(dir, include_vcs=include_vcs))
 
 
-def _read_vers(dir: Path) -> Generator[tuple[str, str], None, None]:
+def _read_vers(
+    dir: Path, *, include_vcs: bool
+) -> Generator[tuple[str, str], None, None]:
     for d in dir.iterdir():
         if d.name.startswith(".") or not d.is_dir():
+            continue
+        if not include_vcs and any(d.name.endswith(f"-{vcs}") for vcs in VCS_PROVIDERS):
             continue
         srcinfo, errors = parse_srcinfo((d / ".SRCINFO").read_text())
         if errors:

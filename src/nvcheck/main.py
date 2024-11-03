@@ -62,7 +62,7 @@ async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
 
     await sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir)
 
-    old_vers = read_vers(pkgs_dir)
+    old_vers = read_vers(pkgs_dir, include_vcs=False)
     try:
         new_vers, has_failures = await run_nvchecker(nvchecker_path, old_vers)
     except FileLoadError as e:
