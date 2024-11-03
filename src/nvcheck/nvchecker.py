@@ -3,7 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from argparse import Namespace
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 from warnings import warn
 
 import nvchecker.core
@@ -24,6 +24,12 @@ if TYPE_CHECKING:
 
 
 __all__ = ["NVCheckerArgs", "FileLoadError", "setup_logging", "run_nvchecker"]
+
+
+logger = cast(
+    structlog.types.FilteringBoundLogger,
+    structlog.get_logger(logger_name="nvcheck.nvchecker"),
+)
 
 
 class NVCheckerArgs(Namespace):
@@ -57,7 +63,7 @@ def _downgrade_http(
 
 
 async def run_nvchecker(
-    cfg_file: Path, oldvers: Mapping[str, str]
+    cfg_file: Path, old_vers: Mapping[str, str]
 ) -> tuple[ResultData, bool]:
     """Run nvchecker and return a tuple of (result, has_failures).
 
@@ -67,6 +73,13 @@ async def run_nvchecker(
         if the config file is not valid
     """
     entries, options = nvchecker.core.load_file(str(cfg_file), use_keymanager=False)
+    if missing := (entries.keys() - old_vers.keys() - {"__config__"}):
+        logger.info("Skipped packages", packages=missing)
+        entries = {
+            name: value
+            for name, value in entries.items()
+            if name in old_vers or name == "__config__"
+        }
     if gh_token := get_token():
         options.keymanager.keys["github"] = gh_token
 
@@ -95,7 +108,7 @@ async def run_nvchecker(
         source_configs=options.source_configs,
     )
 
-    oldvers_rich = {n: RichResult(version=v) for n, v in oldvers.items()}
+    oldvers_rich = {n: RichResult(version=v) for n, v in old_vers.items()}
     result_task = asyncio.create_task(
         nvchecker.core.process_result(
             oldvers_rich, result_q, entry_waiter, verbose=False
