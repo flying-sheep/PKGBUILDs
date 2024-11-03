@@ -5,6 +5,16 @@ httplib = 'httpx'
 source = 'pypi'
 pypi = 'camset'
 
+[desktop-privileges]
+source = 'aur'
+aur = 'desktop-privileges'
+strip_release = true
+
+[desktop-privileges-nogroups]
+source = 'aur'
+aur = 'desktop-privileges-nogroups'
+strip_release = true
+
 [digestif-git]
 source = 'github'
 github = 'astoff/digestif'
