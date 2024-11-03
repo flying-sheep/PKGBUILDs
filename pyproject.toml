@@ -42,6 +42,7 @@ addopts = [
     "--doctest-modules",
     "--pyargs",
     "--ignore=hatch_build.py",
+    "--ignore=pkgs",
 ]
 filterwarnings = ["error"]
 xfail_strict = true
