@@ -16,4 +16,3 @@ package () {
 	install -Dm644 "doc/GUST-FONT-LICENSE.txt" "$pkgdir/usr/share/licenses/$pkgname/GUST-FONT-LICENSE.txt"
 	install -Dm644 "opentype/texgyrepagella-math.otf" "$pkgdir/usr/share/fonts/OTF/texgyrepagella-math.otf"
 }
-
