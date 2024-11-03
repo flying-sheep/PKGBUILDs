@@ -30,6 +30,11 @@ source = 'github'
 github = 'vtraag/libleidenalg'
 use_latest_release = true
 
+[otf-texgyre-pagella-math]
+source = 'regex'
+url = 'https://www.gust.org.pl/projects/e-foundry/tg-math/download/readme-tex-gyre-pagella-math.txt/at_download/file'
+regex = 'Version: ([\d.]+)'
+
 [python-adjusttext]
 source = 'pypi'
 pypi = 'adjusttext'
