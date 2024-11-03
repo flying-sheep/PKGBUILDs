@@ -19,6 +19,10 @@ pypi = 'ipycytoscape'
 source = 'pypi'
 pypi = 'jupyterlab-git'
 
+[jupyterlab-myst]
+source = 'pypi'
+pypi = 'jupyterlab-myst'
+
 [kallisto]
 source = 'github'
 github = 'pachterlab/kallisto'
