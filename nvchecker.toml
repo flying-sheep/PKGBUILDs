@@ -5,6 +5,11 @@ httplib = 'httpx'
 source = 'pypi'
 pypi = 'camset'
 
+[digestif-git]
+source = 'github'
+github = 'astoff/digestif'
+use_latest_tag = true
+
 [hisat2]
 source = 'github'
 github = 'DaehwanKimLab/hisat2'
