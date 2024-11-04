@@ -14,4 +14,3 @@ pkgbase = desktop-privileges-nogroups
 	sha256sums = SKIP
 
 pkgname = desktop-privileges-nogroups
-
