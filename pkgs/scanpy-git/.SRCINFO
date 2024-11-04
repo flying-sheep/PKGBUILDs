@@ -30,4 +30,3 @@ pkgbase = scanpy-git
 	md5sums = SKIP
 
 pkgname = scanpy-git
-
