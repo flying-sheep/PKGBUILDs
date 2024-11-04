@@ -20,9 +20,9 @@ pkgver() {
 
 package() {
 	cd "$srcdir/$_gitname"
-	
+
 	python3 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1
-	
+
 	install -Dm644 jupyter-nbmanager.desktop "$pkgdir/usr/share/applications/jupyter-nbmanager.desktop"
 	for icon in icons/hicolor/*/apps/jupyter-nbmanager.*; do
 		install -Dm644 $icon "$pkgdir/usr/share/$icon"

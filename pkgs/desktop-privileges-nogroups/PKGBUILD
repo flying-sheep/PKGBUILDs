@@ -14,7 +14,7 @@ sha256sums=(SKIP)
 package() {
 	install -dm755 "$pkgdir/etc/polkit-1/"
 	install -dm750 "$pkgdir/etc/polkit-1/rules.d/"
-	
+
 	for rules in "$srcdir/$pkgname/"*.js; do
 		local path="$(head -n1 "$rules" | sed -E 's|/\* Copy this to ([^ ]+) \*/|\1|')"
 		if [[ "$path" != /etc* ]]; then
@@ -24,4 +24,3 @@ package() {
 		sed -Ei 's|subject\.user ===? "\w+"|subject.isInGroup("wheel")|' "$pkgdir/$path"
 	done
 }
-
