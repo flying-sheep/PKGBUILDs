@@ -5,7 +5,7 @@
 pkgname=python-conda
 _name=${pkgname#python-}
 pkgver=24.9.2
-pkgrel=2
+pkgrel=3
 pkgdesc="OS-agnostic, system-level binary package manager and ecosystem https://conda.io"
 arch=('any')
 url="https://github.com/conda/conda"
@@ -38,8 +38,8 @@ makedepends=(
 provides=('python-conda' 'python-conda-env')
 options=(!emptydirs)
 backup=(etc/conda/condarc)
-source=("$_name-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz")
-sha512sums=('9fef002b02d9125b8ba9b7c336b0fc3248496f06c2cd5e2f6a3666933259e770abf86bd72401cc279366664a46f1dd924ae5a97f790ad4e0a4e872e7a7f2817c')
+source=("$url/releases/download/$pkgver/$_name-$pkgver.tar.gz")
+sha256sums=('0dcccbdaab96232dfee4471ca7ea7bbcacdcdf99d161cbb61bd7e92074fa7fcb')
 
 prepare() {
   cd "$srcdir/$_name-$pkgver"
