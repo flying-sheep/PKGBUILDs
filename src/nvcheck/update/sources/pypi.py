@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING, cast, overload
 from packaging.metadata import parse_email
 from packaging.requirements import Requirement
 from packaging.specifiers import SpecifierSet
+from packaging.utils import canonicalize_name
 
 from ...utils import ordered_set
 from . import _source
@@ -134,7 +135,7 @@ def find_req(
     name: str, reqs: Iterable[Requirement], *, strict: bool = True
 ) -> Requirement | None:
     for req in reqs:
-        if req.name == name:
+        if canonicalize_name(req.name) == canonicalize_name(name):
             return req
     if strict:
         raise ValueError(f"{name} not found in {reqs}")
