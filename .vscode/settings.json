@@ -1,6 +1,7 @@
 {
     "python.analysis.typeCheckingMode": "basic",
     "python.analysis.inlayHints.variableTypes": true,
+    "python.terminal.activateEnvironment": false,
     "[python]": {
         "editor.wordBasedSuggestions": "off",
         "editor.defaultFormatter": "charliermarsh.ruff",
@@ -9,5 +10,5 @@
             "source.fixAll": "always",
             "source.organizeImports": "always",
         },
-    }
+    },
 }
