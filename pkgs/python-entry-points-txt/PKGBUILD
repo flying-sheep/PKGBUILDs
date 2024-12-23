@@ -9,14 +9,16 @@ arch=(any)
 url="https://github.com/jwodder/$_name"
 license=(MIT)
 depends=(python)
-_pyarch=py3
-_wheel="${_name//-/_}-$pkgver-$_pyarch-none-any.whl"
-source=("https://files.pythonhosted.org/packages/$_pyarch/${_name::1}/$_name/$_wheel")
-sha256sums=('90abc88ac448b19c7ef08388a2ee066e2151da719cd6cbb6437b5deead5c808c')
-noextract=("$_wheel")
+makedepends=(python-hatchling python-build python-installer python-wheel)
+source=("https://files.pythonhosted.org/packages/source/${_name::1}/$_name/${_name//-/_}-$pkgver.tar.gz")
+sha256sums=('2bca930f93d510cb1629c434954f7c7166b98c3cc968df7fd3fc270bc3cf06e9')
+
+build() {
+	cd "${_name//-/_}-$pkgver"
+	python -m build --wheel --no-isolation
+}
 
 package() {
-	local site="$pkgdir/usr/lib/$(readlink /bin/python3)/site-packages"
-	mkdir -p "$site"
-	unzip "$_wheel" -d "$site"
+	cd "${_name//-/_}-$pkgver"
+	python -m installer --destdir="$pkgdir" dist/*.whl
 }
