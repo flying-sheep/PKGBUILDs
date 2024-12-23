@@ -2,8 +2,8 @@
 
 _name=conda-libmamba-solver
 pkgname=python-$_name
-pkgver=24.9.1a
-pkgrel=2
+pkgver=24.11.1
+pkgrel=1
 pkgdesc='The libmamba based solver for conda.'
 arch=(any)
 url="https://github.com/conda/$_name"
