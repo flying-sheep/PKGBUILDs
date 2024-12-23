@@ -6,8 +6,7 @@ pkgbase = python-entry-points-txt
 	arch = any
 	license = MIT
 	depends = python
-	noextract = entry_points_txt-0.2.1-py3-none-any.whl
-	source = https://files.pythonhosted.org/packages/py3/e/entry-points-txt/entry_points_txt-0.2.1-py3-none-any.whl
-	sha256sums = 90abc88ac448b19c7ef08388a2ee066e2151da719cd6cbb6437b5deead5c808c
+	source = https://files.pythonhosted.org/packages/source/e/entry-points-txt/entry_points_txt-0.2.1.tar.gz
+	sha256sums = 2bca930f93d510cb1629c434954f7c7166b98c3cc968df7fd3fc270bc3cf06e9
 
 pkgname = python-entry-points-txt
