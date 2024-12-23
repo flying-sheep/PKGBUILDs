@@ -119,7 +119,8 @@ class Updater:
                 **COMMON_ARGS, name=label, color=LABEL_COLOR
             )
         except githubkit.exception.RequestFailed as e:
-            errors = cast(ValidationError, e.response.parsed_data).errors or []
+            error = cast(ValidationError, e.response.parsed_data)
+            errors = (error.errors if hasattr(error, "errors") else None) or []
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise
 
