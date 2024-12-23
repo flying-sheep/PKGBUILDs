@@ -16,11 +16,11 @@ pkgbase = scanpy
 	depends = python-pandas>=1.5
 	depends = python-scipy>=1.8
 	depends = python-seaborn>=0.13
-	depends = python-h5py>=3.1
+	depends = python-h5py>=3.6
 	depends = python-tqdm
-	depends = python-scikit-learn>=0.24
+	depends = python-scikit-learn>=1.1
 	depends = python-statsmodels>=0.13
-	depends = python-patsy
+	depends = python-patsy>=1.0.1
 	depends = python-networkx>=2.7
 	depends = python-natsort
 	depends = python-joblib

@@ -15,11 +15,11 @@ depends=(
 	'python-pandas>=1.5'
 	'python-scipy>=1.8'
 	'python-seaborn>=0.13'
-	'python-h5py>=3.1'
+	'python-h5py>=3.6'
 	python-tqdm
-	'python-scikit-learn>=0.24'
+	'python-scikit-learn>=1.1'
 	'python-statsmodels>=0.13'
-	python-patsy
+	'python-patsy>=1.0.1'
 	'python-networkx>=2.7'
 	python-natsort
 	python-joblib
