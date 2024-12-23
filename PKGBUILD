@@ -38,12 +38,15 @@ makedepends=(
 provides=('python-conda' 'python-conda-env')
 options=(!emptydirs)
 backup=(etc/conda/condarc)
-source=("$url/releases/download/$pkgver/$_name-$pkgver.tar.gz")
-sha256sums=('0dcccbdaab96232dfee4471ca7ea7bbcacdcdf99d161cbb61bd7e92074fa7fcb')
+source=("$url/releases/download/$pkgver/$_name-$pkgver.tar.gz"
+        "py-3.13-logging.patch::$url/commit/62196c897df3d7aea7063d0c08d1bf6e6fd91600.patch")
+sha256sums=('0dcccbdaab96232dfee4471ca7ea7bbcacdcdf99d161cbb61bd7e92074fa7fcb'
+            'dcd0edb6cc59c67629ddfa6e9fb38f53eff293df92d8a0222ede051c8e66b149')
 
 prepare() {
   cd "$srcdir/$_name-$pkgver"
 
+  patch -p 1 -i "$srcdir/py-3.13-logging.patch"
   sed -i '3s/^/set _CONDA_EXE=\/usr\/bin\/conda\n/' conda/shell/etc/profile.d/conda.csh
   sed -i '3s/^/export CONDA_EXE=\/usr\/bin\/conda\n/' conda/shell/etc/profile.d/conda.sh
   sed -i '8s/^/set -l CONDA_EXE \/usr\/bin\/conda\n/' conda/shell/etc/fish/conf.d/conda.fish
