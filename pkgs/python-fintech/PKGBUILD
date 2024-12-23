@@ -2,7 +2,7 @@
 
 _name=fintech
 pkgname=python-$_name
-pkgver=7.5.3
+pkgver=7.6.3
 pkgrel=1
 pkgdesc='Finance tech: SEPA, EBICS & more'
 arch=(any)
@@ -13,7 +13,7 @@ depends=("python>=3.$_pyminor" "python<3.$((_pyminor + 1))" python-lxml python-c
 makedepends=(python-installer)
 _wheel="${_name/-/_}-$pkgver-cp3$_pyminor-none-any.whl"
 source=("https://files.pythonhosted.org/packages/cp3$_pyminor/${_name::1}/$_name/$_wheel")
-sha256sums=('a081486ab2f564440aa4923c51efa328ad41955e014b379f464d7f12d0c849a5')
+sha256sums=('e5867502388a7d2b10ab33d5cd3cd39314a166a30d433438669645892fa9fe02')
 noextract=("$_wheel")
 
 package() {
