@@ -2,8 +2,8 @@
 
 _name=wheel-filename
 pkgname=python-$_name
-pkgver=1.4.1
-pkgrel=2
+pkgver=1.4.2
+pkgrel=1
 pkgdesc='Parse wheel filenames'
 arch=(any)
 url="https://github.com/jwodder/$_name"
