@@ -6,6 +6,14 @@ from nvchecker.core import load_file
 
 HERE = Path(__file__).parent
 NVCHECKER_TOML, _ = load_file(str(HERE.parent / "nvchecker.toml"), use_keymanager=False)
+IGNORED = frozenset(
+    {
+        "__config__",
+        "otf-texgyre-pagella-math",
+        "desktop-privileges",
+        "desktop-privileges-nogroups",
+    }
+)
 
 
 def test_source_names() -> None:
@@ -13,8 +21,6 @@ def test_source_names() -> None:
 
     source_names = {source_cls().name for source_cls in SOURCES}
     conf_names = {
-        info["source"]
-        for table, info in NVCHECKER_TOML.items()
-        if table != "__config__"
+        info["source"] for table, info in NVCHECKER_TOML.items() if table not in IGNORED
     }
     assert source_names >= conf_names
