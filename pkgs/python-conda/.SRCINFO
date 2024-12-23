@@ -29,6 +29,8 @@ pkgbase = python-conda
 	options = !emptydirs
 	backup = etc/conda/condarc
 	source = https://github.com/conda/conda/releases/download/24.9.2/conda-24.9.2.tar.gz
+	source = py-3.13-logging.patch::https://github.com/conda/conda/commit/62196c897df3d7aea7063d0c08d1bf6e6fd91600.patch
 	sha256sums = 0dcccbdaab96232dfee4471ca7ea7bbcacdcdf99d161cbb61bd7e92074fa7fcb
+	sha256sums = dcd0edb6cc59c67629ddfa6e9fb38f53eff293df92d8a0222ede051c8e66b149
 
 pkgname = python-conda
