@@ -119,7 +119,7 @@ class PyPIDepChanges:
         if self.added:
             msg += f"\n+ { {str(req) for req in self.added} }"
         if self.changed:
-            msg += f"\n~ { {f"{v0} -> {v1}" for v0, v1 in self.changed} }"
+            msg += f"\n~ { {f'{v0} -> {v1}' for v0, v1 in self.changed} }"
         return msg
 
 
