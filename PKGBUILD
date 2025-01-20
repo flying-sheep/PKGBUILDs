@@ -5,7 +5,7 @@
 pkgname=python-conda
 _name=${pkgname#python-}
 pkgver=24.11.3
-pkgrel=1
+pkgrel=2
 pkgdesc="OS-agnostic, system-level binary package manager and ecosystem https://conda.io"
 arch=('any')
 url="https://github.com/conda/conda"
@@ -18,6 +18,7 @@ depends=(
   'python-botocore'
   'python-conda-package-handling'
   'python-conda-libmamba-solver'
+  'python-platformdirs'
   'python-pluggy>=1.0.0'
   'python-pycosat>=0.6.3'
   'python-requests>=2.20.1'
