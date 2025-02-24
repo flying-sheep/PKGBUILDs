@@ -2,7 +2,7 @@
 
 _name=conda-libmamba-solver
 pkgname=python-$_name
-pkgver=24.11.1
+pkgver=25.1.1
 pkgrel=1
 pkgdesc='The libmamba based solver for conda.'
 arch=(any)
