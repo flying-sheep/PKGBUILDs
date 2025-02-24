@@ -6,6 +6,7 @@ pkgbase = python-qtico
 	arch = any
 	license = GPL-3.0
 	makedepends = python-hatchling
+	makedepends = python-hatch-vcs
 	makedepends = python-build
 	makedepends = python-installer
 	depends = python
