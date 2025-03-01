@@ -3,11 +3,11 @@
 
 pkgname=resvg
 pkgver=0.45.0
-pkgrel=1
+pkgrel=2
 pkgdesc='SVG rendering library and CLI'
 arch=(i686 x86_64)
 url="https://github.com/RazrFalcon/$pkgname"
-license=(MPL2)
+license=(Apache-2.0 MIT)
 depends=(gdk-pixbuf2)
 optdepends=(
 	'qt5-base: For the Qt backend'
@@ -27,6 +27,7 @@ prepare() {
 build() {
 	cd "$pkgname-$pkgver"
 
+	export CARGO_TARGET_DIR=target
 	export RUSTUP_TOOLCHAIN=stable
 	export CARGO_TARGET_DIR=target
 	cargo build --workspace --frozen --release --all-features
@@ -53,12 +54,15 @@ build() {
 
 check() {
 	cd "$pkgname-$pkgver"
+
+	export CARGO_TARGET_DIR=target
 	export RUSTUP_TOOLCHAIN=stable
 	cargo test --frozen --all-features
 }
 
 package() {
 	cd "$pkgname-$pkgver"
+
 	install -Dm755 -t "$pkgdir/usr/bin/" target/release/{resvg,usvg} tools/viewsvg/viewsvg
 	make -C tools/kde-dolphin-thumbnailer/build install
 	install -Dm755 -t "$pkgdir/usr/lib/" target/release/libresvg.so
