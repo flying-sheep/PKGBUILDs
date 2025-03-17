@@ -64,7 +64,7 @@ async def get_reqs(
     resp_json = resp.json()
 
     url_gen = (
-        cast(str, f["url"])
+        cast("str", f["url"])
         for f in resp_json["files"]
         if f["filename"].startswith(f"{name.replace('-', '_')}-{version}")
         and f["data-dist-info-metadata"]
@@ -101,7 +101,7 @@ class PyPIDepChanges:
         }
         self.removed = sub(*bare_reqs.values())
         self.added = sub(*reversed(bare_reqs.values()))
-        reqs_in_both = cast(KeysView[Requirement], and_(*bare_reqs.values()))
+        reqs_in_both = cast("KeysView[Requirement]", and_(*bare_reqs.values()))
         self.changed = [
             (old, new)
             for old, new in [

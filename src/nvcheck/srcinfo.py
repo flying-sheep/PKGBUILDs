@@ -29,4 +29,4 @@ def _read_vers(
         srcinfo, errors = parse_srcinfo((d / ".SRCINFO").read_text())
         if errors:
             raise RuntimeError(f"Error parsing {d}:\n{errors}")
-        yield d.name, cast(str, srcinfo["pkgver"])
+        yield d.name, cast("str", srcinfo["pkgver"])

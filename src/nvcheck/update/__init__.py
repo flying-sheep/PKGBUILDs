@@ -28,7 +28,7 @@ if TYPE_CHECKING:
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger,
+    "structlog.types.FilteringBoundLogger",
     structlog.get_logger(logger_name="nvcheck.update"),
 )
 
@@ -119,7 +119,7 @@ class Updater:
                 **COMMON_ARGS, name=label, color=LABEL_COLOR
             )
         except githubkit.exception.RequestFailed as e:
-            error = cast(ValidationError, e.response.parsed_data)
+            error = cast("ValidationError", e.response.parsed_data)
             errors = (error.errors if hasattr(error, "errors") else None) or []
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise

@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger,
+    "structlog.types.FilteringBoundLogger",
     structlog.get_logger(logger_name="nvcheck.update.branch"),
 )
 
@@ -36,7 +36,7 @@ async def create_branch(
 
     with TemporaryDirectory() as tmp_dir:
         repo = cast(
-            Repository,
+            "Repository",
             pygit2.clone_repository(str(repo_dir), tmp_dir, checkout_branch="main"),
         )
         repo.remotes.set_url("origin", origin.url)
