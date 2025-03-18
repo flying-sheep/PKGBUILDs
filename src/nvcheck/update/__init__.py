@@ -10,7 +10,6 @@ import githubkit
 import githubkit.exception
 import structlog
 from githubkit import GitHub
-from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
 from .branch import create_branch
@@ -21,14 +20,14 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import TypeVar
 
-    from githubkit.rest import PullRequestSimple
+    from githubkit.rest import PullRequestSimple, ValidationError
     from nvchecker.util import RichResult
 
     T = TypeVar("T")
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger,
+    "structlog.types.FilteringBoundLogger",
     structlog.get_logger(logger_name="nvcheck.update"),
 )
 
@@ -119,7 +118,7 @@ class Updater:
                 **COMMON_ARGS, name=label, color=LABEL_COLOR
             )
         except githubkit.exception.RequestFailed as e:
-            error = cast(ValidationError, e.response.parsed_data)
+            error = cast("ValidationError", e.response.parsed_data)
             errors = (error.errors if hasattr(error, "errors") else None) or []
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise

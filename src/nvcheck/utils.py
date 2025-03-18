@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger,
+    "structlog.types.FilteringBoundLogger",
     structlog.get_logger(logger_name="nvcheck.utils"),
 )
 

@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, cast
 
 import pygit2
 import structlog
-from pygit2.repository import Repository
 
 from ..utils import run_checked
 
@@ -17,10 +16,11 @@ if TYPE_CHECKING:
 
     from pygit2.callbacks import _Credentials
     from pygit2.enums import CredentialType
+    from pygit2.repository import Repository
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger,
+    "structlog.types.FilteringBoundLogger",
     structlog.get_logger(logger_name="nvcheck.update.branch"),
 )
 
@@ -36,7 +36,7 @@ async def create_branch(
 
     with TemporaryDirectory() as tmp_dir:
         repo = cast(
-            Repository,
+            "Repository",
             pygit2.clone_repository(str(repo_dir), tmp_dir, checkout_branch="main"),
         )
         repo.remotes.set_url("origin", origin.url)

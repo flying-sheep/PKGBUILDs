@@ -27,7 +27,7 @@ __all__ = ["NVCheckerArgs", "FileLoadError", "setup_logging", "run_nvchecker"]
 
 
 logger = cast(
-    structlog.types.FilteringBoundLogger,
+    "structlog.types.FilteringBoundLogger",
     structlog.get_logger(logger_name="nvcheck.nvchecker"),
 )
 

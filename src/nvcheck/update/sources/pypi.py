@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import re
-from collections.abc import KeysView
 from dataclasses import dataclass, field
 from operator import and_, sub
 from typing import TYPE_CHECKING, cast, overload
@@ -16,7 +15,7 @@ from ...utils import ordered_set
 from . import _source
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable, Mapping, Sequence, Set
+    from collections.abc import Generator, Iterable, KeysView, Mapping, Sequence, Set
     from typing import Literal, TypeVar
 
     from httpx import AsyncClient
@@ -64,7 +63,7 @@ async def get_reqs(
     resp_json = resp.json()
 
     url_gen = (
-        cast(str, f["url"])
+        cast("str", f["url"])
         for f in resp_json["files"]
         if f["filename"].startswith(f"{name.replace('-', '_')}-{version}")
         and f["data-dist-info-metadata"]
@@ -101,7 +100,7 @@ class PyPIDepChanges:
         }
         self.removed = sub(*bare_reqs.values())
         self.added = sub(*reversed(bare_reqs.values()))
-        reqs_in_both = cast(KeysView[Requirement], and_(*bare_reqs.values()))
+        reqs_in_both = cast("KeysView[Requirement]", and_(*bare_reqs.values()))
         self.changed = [
             (old, new)
             for old, new in [
