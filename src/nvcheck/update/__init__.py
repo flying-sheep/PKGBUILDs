@@ -10,7 +10,6 @@ import githubkit
 import githubkit.exception
 import structlog
 from githubkit import GitHub
-from githubkit.rest import ValidationError
 from httpx import AsyncClient
 
 from .branch import create_branch
@@ -21,7 +20,7 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import TypeVar
 
-    from githubkit.rest import PullRequestSimple
+    from githubkit.rest import PullRequestSimple, ValidationError
     from nvchecker.util import RichResult
 
     T = TypeVar("T")

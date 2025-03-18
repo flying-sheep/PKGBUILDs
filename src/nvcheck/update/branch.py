@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, cast
 
 import pygit2
 import structlog
-from pygit2.repository import Repository
 
 from ..utils import run_checked
 
@@ -17,6 +16,7 @@ if TYPE_CHECKING:
 
     from pygit2.callbacks import _Credentials
     from pygit2.enums import CredentialType
+    from pygit2.repository import Repository
 
 
 logger = cast(

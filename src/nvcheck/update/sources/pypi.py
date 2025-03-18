@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import re
-from collections.abc import KeysView
 from dataclasses import dataclass, field
 from operator import and_, sub
 from typing import TYPE_CHECKING, cast, overload
@@ -16,7 +15,7 @@ from ...utils import ordered_set
 from . import _source
 
 if TYPE_CHECKING:
-    from collections.abc import Generator, Iterable, Mapping, Sequence, Set
+    from collections.abc import Generator, Iterable, KeysView, Mapping, Sequence, Set
     from typing import Literal, TypeVar
 
     from httpx import AsyncClient
