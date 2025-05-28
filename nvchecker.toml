@@ -49,10 +49,6 @@ source = 'github'
 github = 'vtraag/libleidenalg'
 use_latest_release = true
 
-[nbmanager-git]
-source = 'pypi'
-pypi = 'nbmanager'
-
 [nbopen]
 source = 'pypi'
 pypi = 'nbopen'
