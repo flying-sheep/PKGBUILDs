@@ -4,6 +4,7 @@
 /pkgs/*/*.tar.gz
 /pkgs/*/*.log
 
+/dist/
 __pycache__/
 
 /src/aurweb_client/
