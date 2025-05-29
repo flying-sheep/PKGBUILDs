@@ -3,7 +3,7 @@
 # Contributor: Ke Liu <specter119@gmail.com>
 
 pkgname=python-libmamba
-pkgver=2.0.1
+pkgver=2.1.1
 _srcver=2024.09.30
 _name=mamba-$_srcver
 pkgrel=1
