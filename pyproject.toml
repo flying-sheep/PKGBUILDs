@@ -11,7 +11,7 @@ license = "MIT"
 authors = [{ name = "Philipp Angerer", email = "philipp.angerer@helmholtz-munich.de" }]
 readme = "README.md"
 dependencies = [
-    "nvchecker[pypi]",
+    "nvchecker[pypi] >=2.16",
     "pyalpm",
     "srcinfo",
     "httpx[http2,brotli,zstd]",
