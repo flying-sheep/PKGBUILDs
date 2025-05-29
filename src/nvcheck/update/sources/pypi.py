@@ -114,11 +114,11 @@ class PyPIDepChanges:
         v0, v1 = self.reqs.keys()
         msg = f"PyPI update: {self.name} ({v0} -> {v1})"
         if self.removed:
-            msg += f"\n- { {str(req) for req in self.removed} }"
+            msg += f"\n\\- { {str(req) for req in self.removed} }"
         if self.added:
-            msg += f"\n+ { {str(req) for req in self.added} }"
+            msg += f"\n\\+ { {str(req) for req in self.added} }"
         if self.changed:
-            msg += f"\n~ { {f'{v0} -> {v1}' for v0, v1 in self.changed} }"
+            msg += f"\n\\~ { {f'{v0} -> {v1}' for v0, v1 in self.changed} }"
         return msg
 
 
