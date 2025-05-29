@@ -15,7 +15,8 @@ sha256sums=('c47f20d656454568c6b4697ce02081e6bbb512f198738c6a56fafe8029c97fb1')
 
 build() {
 	cd "$_name-$pkgver"
-	export CFLAGS="$CFLAGS -march=native"
+	# https://github.com/Blosc/c-blosc/issues/393
+	export CFLAGS="$CFLAGS -march=native -std=gnu17"
 	python -m build --wheel --no-isolation
 }
 
