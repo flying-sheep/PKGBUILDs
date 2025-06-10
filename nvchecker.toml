@@ -155,12 +155,6 @@ pypi = 'legacy-api-wrap'
 source = 'pypi'
 pypi = 'leidenalg'
 
-[python-libmamba]
-source = 'github'
-github = 'mamba-org/mamba'
-use_latest_release = true
-use_release_name = true
-
 [python-loompy]
 source = 'pypi'
 pypi = 'loompy'
