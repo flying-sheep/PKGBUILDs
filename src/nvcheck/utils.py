@@ -24,7 +24,7 @@ logger = cast(
 )
 
 
-def ordered_set(iterable: Iterable[T]) -> KeysView[T]:
+def ordered_set[T](iterable: Iterable[T]) -> KeysView[T]:
     return dict.fromkeys(iterable).keys()
 
 
