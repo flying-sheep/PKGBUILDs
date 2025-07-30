@@ -288,10 +288,6 @@ pypi = 'wheel-inspect'
 source = 'pypi'
 pypi = 'zarr'
 
-[resvg]
-source = 'cratesio'
-cratesio = 'resvg'
-
 [scanpy]
 source = 'pypi'
 pypi = 'scanpy'
