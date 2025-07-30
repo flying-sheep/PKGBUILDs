@@ -239,6 +239,9 @@ pypi = 'scanpydoc'
 source = 'pypi'
 pypi = 'scvelo'
 
+[python-session-info2]
+source = 'pypi'
+
 [python-smart-progress]
 source = 'pypi'
 pypi = 'smart-progress'
