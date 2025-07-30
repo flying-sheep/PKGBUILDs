@@ -241,6 +241,7 @@ pypi = 'scvelo'
 
 [python-session-info2]
 source = 'pypi'
+pypi = 'session-info2'
 
 [python-smart-progress]
 source = 'pypi'
