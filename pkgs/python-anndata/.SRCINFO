@@ -16,6 +16,8 @@ pkgbase = python-anndata
 	depends = python-natsort
 	depends = python-packaging
 	depends = python-array-api-compat
+	depends = python-legacy-api-wrap
+	depends = python-zarr
 	source = https://files.pythonhosted.org/packages/source/a/anndata/anndata-0.12.1.tar.gz
 	sha256sums = 9a0767a7c47464ad78457e297d871f7ec483bdafc7cf76cb322168919c375ff1
 
