@@ -12,6 +12,7 @@ IGNORED = frozenset(
         "otf-texgyre-pagella-math",
         "desktop-privileges",
         "desktop-privileges-nogroups",
+        "twemoji-mozilla-fontconfig",
     }
 )
 
