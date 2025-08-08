@@ -308,3 +308,6 @@ pypi = 'scanpy-scripts'
 source = 'github'
 github = 'mrkite/TerraFirma'
 use_latest_release = true
+
+[twemoji-mozilla-fontconfig]
+source = 'aur'
