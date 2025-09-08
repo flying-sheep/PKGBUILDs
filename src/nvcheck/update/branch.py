@@ -54,7 +54,7 @@ async def create_branch(
                 lines[i] = line.replace(line.split("=", 1)[1], "1")
         (pkg_dir / "PKGBUILD").write_text("\n".join(lines))
 
-        # run in order, “mksrcinfo” needs info from “updpkgsums”
+        # run in order, “makepkg --printsrcinfo” needs info from “updpkgsums”
         for cmd in [["updpkgsums"], ["makepkg", "--printsrcinfo"]]:
             await run_checked(*cmd, cwd=pkg_dir, log=True)
 
