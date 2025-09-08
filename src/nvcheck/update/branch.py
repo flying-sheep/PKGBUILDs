@@ -54,9 +54,9 @@ async def create_branch(
                 lines[i] = line.replace(line.split("=", 1)[1], "1")
         (pkg_dir / "PKGBUILD").write_text("\n".join(lines))
 
-        # run in order, “makepkg --printsrcinfo” needs info from “updpkgsums”
-        for cmd in [["updpkgsums"], ["makepkg", "--printsrcinfo"]]:
-            await run_checked(*cmd, cwd=pkg_dir, log=True)
+        await run_checked("updpkgsums", cwd=pkg_dir, log=True)
+        src_info = await run_checked("makepkg", "--printsrcinfo", cwd=pkg_dir, log=True)
+        Path(pkg_dir / ".SRCINFO").write_text(src_info)
 
         parent = repo.head.target
         repo.index.add_all([pkg_dir_rel / p for p in ["PKGBUILD", ".SRCINFO"]])
