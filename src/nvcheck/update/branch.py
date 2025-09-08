@@ -55,8 +55,8 @@ async def create_branch(
         (pkg_dir / "PKGBUILD").write_text("\n".join(lines))
 
         # run in order, “mksrcinfo” needs info from “updpkgsums”
-        for cmd in ["updpkgsums", "mksrcinfo"]:
-            await run_checked(cmd, cwd=pkg_dir, log=True)
+        for cmd in [["updpkgsums"], ["makepkg", "--printsrcinfo"]]:
+            await run_checked(*cmd, cwd=pkg_dir, log=True)
 
         parent = repo.head.target
         repo.index.add_all([pkg_dir_rel / p for p in ["PKGBUILD", ".SRCINFO"]])
