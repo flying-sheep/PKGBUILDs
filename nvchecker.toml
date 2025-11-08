@@ -95,8 +95,9 @@ source = 'pypi'
 pypi = 'cmake'
 
 [python-conda]
-source = 'pypi'
-pypi = 'conda'
+source = 'github'
+github = 'conda/conda'
+use_latest_release = true
 
 [python-conda-libmamba-solver]
 source = 'github'
