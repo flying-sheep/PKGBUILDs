@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import asyncio
-import os
-from dataclasses import dataclass, field
+from dataclasses import KW_ONLY, dataclass, field
 from functools import partial
 from typing import TYPE_CHECKING, TypedDict, cast
 
@@ -48,29 +47,26 @@ COMMON_ARGS = CommonArgs(owner="flying-sheep", repo="pkgbuilds")
 
 
 async def update_pkgbuilds(
-    updated: Mapping[str, tuple[str, RichResult]], *, repo_dir: Path, pkgs_dir: Path
+    updated: Mapping[str, tuple[str, RichResult]],
+    *,
+    repo_dir: Path,
+    pkgs_dir: Path,
+    gh_token: str,
 ) -> None:
     logger.info("Updating", packages=set(updated))
-    updater = Updater(repo_dir, pkgs_dir)
+    updater = Updater(repo_dir, pkgs_dir, gh_client=GitHub(gh_token))
     async with updater.http_client, asyncio.TaskGroup() as tg:
         for name, (oldver, new) in updated.items():
             tg.create_task(updater.update(name, oldver, new))
-
-
-def get_token() -> str | None:
-    return os.environ.get("GH_TOKEN")
-
-
-def create_github_client() -> GitHub:
-    return GitHub(auth=get_token())
 
 
 @dataclass
 class Updater:
     repo_dir: Path
     pkgs_dir: Path
+    _: KW_ONLY
+    gh_client: GitHub
     http_client: AsyncClient = field(default_factory=lambda: AsyncClient(http2=True))
-    gh_client: GitHub = field(default_factory=create_github_client)
     known_prs: MutableSequence[PullRequestSimple] = field(default_factory=list)
 
     async def update(self, name: str, oldver: str, new: RichResult) -> None:
