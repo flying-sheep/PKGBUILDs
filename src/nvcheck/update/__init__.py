@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import asyncio
-import os
 from dataclasses import KW_ONLY, dataclass, field
 from functools import partial
-from typing import TYPE_CHECKING, TypedDict, cast, overload
+from typing import TYPE_CHECKING, TypedDict, cast
 
 import githubkit
 import githubkit.exception
@@ -18,7 +17,7 @@ from .sources import msg_update
 if TYPE_CHECKING:
     from collections.abc import Mapping, MutableSequence
     from pathlib import Path
-    from typing import Literal, TypeVar
+    from typing import TypeVar
 
     from githubkit.rest import PullRequestSimple, ValidationError
     from nvchecker.util import RichResult
@@ -59,25 +58,6 @@ async def update_pkgbuilds(
     async with updater.http_client, asyncio.TaskGroup() as tg:
         for name, (oldver, new) in updated.items():
             tg.create_task(updater.update(name, oldver, new))
-
-
-@overload
-async def get_token(from_gh: Literal[True]) -> str: ...
-@overload
-async def get_token(from_gh: Literal[False] = False) -> str | None: ...
-async def get_token(from_gh: bool = False) -> str | None:
-    token = os.environ.get("GH_TOKEN")
-    if not from_gh or token is not None:
-        return token
-    proc = await asyncio.create_subprocess_exec(
-        *("gh", "auth", "token"),
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
-    stdout, stderr = await proc.communicate()
-    if proc.returncode != 0:
-        raise RuntimeError(stderr.decode())
-    return stdout.decode().strip()
 
 
 @dataclass

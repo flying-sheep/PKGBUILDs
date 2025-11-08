@@ -9,10 +9,11 @@ from typing import TYPE_CHECKING, cast
 
 import structlog
 
+from .github import get_token
 from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
 from .sync import sync_maintained_pkgbuilds
-from .update import get_token, update_pkgbuilds
+from .update import update_pkgbuilds
 from .utils import vercmp
 
 if TYPE_CHECKING:
