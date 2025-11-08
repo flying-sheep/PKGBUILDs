@@ -13,8 +13,6 @@ from nvchecker.core import FileLoadError
 from nvchecker.ctxvars import proxy as ctx_proxy
 from nvchecker.util import EntryWaiter, RichResult
 
-from .update import get_token
-
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from pathlib import Path
@@ -63,7 +61,7 @@ def _downgrade_http(
 
 
 async def run_nvchecker(
-    cfg_file: Path, old_vers: Mapping[str, str]
+    cfg_file: Path, old_vers: Mapping[str, str], *, gh_token: str | None
 ) -> tuple[ResultData, bool]:
     """Run nvchecker and return a tuple of (result, has_failures).
 
@@ -80,7 +78,7 @@ async def run_nvchecker(
             for name, value in entries.items()
             if name in old_vers or name == "__config__"
         }
-    if gh_token := get_token():
+    if gh_token is not None:
         options.keymanager.keys["github"] = gh_token
 
     if options.ver_files is not None:
@@ -108,7 +106,7 @@ async def run_nvchecker(
         source_configs=options.source_configs,
     )
 
-    oldvers_rich = {n: RichResult(version=v) for n, v in old_vers.items()}
+    oldvers_rich: ResultData = {n: RichResult(version=v) for n, v in old_vers.items()}
     result_task = asyncio.create_task(
         nvchecker.core.process_result(
             oldvers_rich, result_q, entry_waiter, verbose=False

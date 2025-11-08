@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 from argparse import ArgumentParser, Namespace
 from dataclasses import dataclass, field
 from itertools import groupby
@@ -11,7 +12,7 @@ import structlog
 from .nvchecker import FileLoadError, run_nvchecker, setup_logging
 from .srcinfo import read_vers
 from .sync import sync_maintained_pkgbuilds
-from .update import update_pkgbuilds
+from .update import get_token, update_pkgbuilds
 from .utils import vercmp
 
 if TYPE_CHECKING:
@@ -60,11 +61,16 @@ async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
     nvchecker_path = args.dir / "nvchecker.toml"
     pkgs_dir = args.dir / "pkgs"
 
-    await sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir)
+    _, gh_token = await asyncio.gather(
+        sync_maintained_pkgbuilds(nvchecker_path, repo_dir=args.dir),
+        get_token(from_gh=True),
+    )
 
     old_vers = read_vers(pkgs_dir, include_vcs=False)
     try:
-        new_vers, has_failures = await run_nvchecker(nvchecker_path, old_vers)
+        new_vers, has_failures = await run_nvchecker(
+            nvchecker_path, old_vers, gh_token=gh_token
+        )
     except FileLoadError as e:
         return str(e)
     if has_failures:
@@ -89,7 +95,9 @@ async def main_async(argv: Sequence[str] | None = None) -> int | str | None:
         pkgs = {name: f"{old} > {new.version}" for name, (old, new) in too_new.items()}
         logger.warning("Higher versions than upstream", pkgs=pkgs)
     if upgraded := groups.get(1):
-        await update_pkgbuilds(upgraded, repo_dir=args.dir, pkgs_dir=pkgs_dir)
+        await update_pkgbuilds(
+            upgraded, repo_dir=args.dir, pkgs_dir=pkgs_dir, gh_token=gh_token
+        )
 
 
 def main(argv: Sequence[str] | None = None) -> int | str | None:
