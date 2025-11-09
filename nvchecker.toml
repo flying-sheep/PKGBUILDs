@@ -38,12 +38,6 @@ pypi = 'jupyterlab-git'
 source = 'pypi'
 pypi = 'jupyterlab-myst'
 
-[kallisto]
-source = 'github'
-github = 'pachterlab/kallisto'
-use_latest_release = true
-prefix = 'v'
-
 [libleidenalg]
 source = 'github'
 github = 'vtraag/libleidenalg'
