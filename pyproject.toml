@@ -1,7 +1,6 @@
 [build-system]
 build-backend = "hatchling.build"
-# https://github.com/openapi-generators/openapi-python-client/issues/1174
-requires = ["hatchling", "hatch-vcs", "openapi-python-client", "pydantic==2.9.*"]
+requires = ["hatchling", "hatch-vcs", "openapi-python-client"]
 
 [project]
 name = "nvcheck"

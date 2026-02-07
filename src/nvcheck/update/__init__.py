@@ -9,6 +9,7 @@ import githubkit
 import githubkit.exception
 import structlog
 from githubkit import GitHub
+from httpcore import NetworkError
 from httpx import AsyncClient
 
 from .branch import create_branch
@@ -81,7 +82,7 @@ class Updater:
         try:
             msg = await self.msg_update(name, oldver, new)
             await self.upsert_pr(name, oldver, new, msg)
-        except* RuntimeError as eg:
+        except* (RuntimeError, NetworkError) as eg:
             e = eg.exceptions[0] if len(eg.exceptions) == 1 else eg
             logger.error("Error updating", package=name, error=e)
 
