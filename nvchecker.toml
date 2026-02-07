@@ -291,10 +291,6 @@ pypi = 'zarr'
 source = 'pypi'
 pypi = 'scanpy'
 
-[scanpy-git]
-source = 'pypi'
-pypi = 'scanpy'
-
 [scanpy-scripts]
 source = 'pypi'
 pypi = 'scanpy-scripts'
