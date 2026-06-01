@@ -1,7 +1,7 @@
 # Maintainer: Phil A. <flying-sheep@web.de>
 # Contributor: Anthony Wang <ta180m@gmail.com>
 pkgname=jupyterlab-myst
-pkgver=2.4.2
+pkgver=2.6.0
 pkgrel=1
 pkgdesc='Use MyST in JupyterLab'
 arch=(any)
@@ -21,7 +21,7 @@ makedepends=(
 )
 provides=(python-jupyterlab-myst)
 source=("$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('d50cab8e5e1a24710c490bb0898f1c6da2dcdeaed5dfa6691cb0f9f2fe45904e')
+sha256sums=('b3c5fb7cd3904c64bfd490b3de8d6351c8aa7c3d52ac1eb5ff8c69e9530f71f0')
 
 build() {
 	cd "$srcdir/$pkgname-$pkgver"
