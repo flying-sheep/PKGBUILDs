@@ -16,10 +16,8 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     steps:
     - run: pacman -Sy --noconfirm git
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        filter: blob:none
+    - uses: actions/checkout@v6
+      with: { fetch-depth: 0, filter: blob:none }
     - run: ls
     - uses: tj-actions/changed-files@v45
       id: changed-files

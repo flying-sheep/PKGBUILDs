@@ -24,3 +24,4 @@ class CustomBuildHook(BuildHookInterface):
             output_path=HERE / "src" / "aurweb_client",
         )
         generate(config=cfg)
+        build_data["artifacts"] += ["src/aurweb_client"]

@@ -19,11 +19,9 @@ jobs:
         python-version: ['3.12']
     steps:
     - run: pacman -Sy --noconfirm git base-devel
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        filter: blob:none
-    - uses: actions/setup-python@v5
+    - uses: actions/checkout@v6
+      with: { fetch-depth: 0, filter: blob:none }
+    - uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
     - uses: hynek/setup-cached-uv@v2

@@ -84,10 +84,6 @@ pypi = 'array-api-compat'
 source = 'pypi'
 pypi = 'asyncore-wsgi'
 
-[python-cmake-bin]
-source = 'pypi'
-pypi = 'cmake'
-
 [python-conda]
 source = 'github'
 github = 'conda/conda'
