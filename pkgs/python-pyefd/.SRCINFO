@@ -5,9 +5,11 @@ pkgbase = python-pyefd
 	url = https://github.com/hbldh/pyefd
 	arch = any
 	license = MIT
+	makedepends = python-setuptools
+	makedepends = python-build
+	makedepends = python-installer
 	depends = python-numpy
-	noextract = pyefd-1.7.0-py2.py3-none-any.whl
-	source = https://files.pythonhosted.org/packages/py2.py3/p/pyefd/pyefd-1.7.0-py2.py3-none-any.whl
-	sha256sums = c6bfbe2a7dae24dd5fa76b87817c1ec64459047f9c082ec060a1fee77c27dfcf
+	source = pyefd-1.7.0.tar.gz::https://github.com/hbldh/pyefd/archive/refs/tags/v1.7.0.tar.gz
+	sha256sums = 8252267a5455f72bba0baeb6b15e77de9cc802309b3f5d4a52534e41ad4aa187
 
 pkgname = python-pyefd
