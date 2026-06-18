@@ -11,6 +11,7 @@ pkgbase = jupyterlab-myst
 	makedepends = python-hatch-jupyter-builder
 	makedepends = python-hatch-nodejs-version
 	makedepends = nodejs
+	makedepends = pnpm
 	makedepends = python-installer
 	depends = jupyter-server
 	provides = python-jupyterlab-myst
