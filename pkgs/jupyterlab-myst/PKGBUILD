@@ -1,7 +1,7 @@
 # Maintainer: Phil A. <flying-sheep@web.de>
 # Contributor: Anthony Wang <ta180m@gmail.com>
 pkgname=jupyterlab-myst
-pkgver=2.6.0
+pkgver=2.7.0
 pkgrel=1
 pkgdesc='Use MyST in JupyterLab'
 arch=(any)
@@ -20,11 +20,17 @@ makedepends=(
 	python-installer
 )
 provides=(python-jupyterlab-myst)
-source=("$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('b3c5fb7cd3904c64bfd490b3de8d6351c8aa7c3d52ac1eb5ff8c69e9530f71f0')
+source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
+sha256sums=('ed8853c25e96d8dd58a4d745c5c7cb77961bd4c46fa80eb75fc60e2dfd2d8813')
+
+prepare() {
+	cd "$srcdir/$pkgname-$pkgver"
+	sed -i 's/pnpm@11/pnpm@11.8.0/g' package.json
+}
 
 build() {
 	cd "$srcdir/$pkgname-$pkgver"
+	export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 	python -m build --wheel --no-isolation --skip-dependency-check
 }
 
