@@ -28,6 +28,8 @@ jobs:
     - uses: flying-sheep/check@v1
       with:
         success: ${{ fromJson(steps.changed-files.outputs.all_changed_files_count) == 1 }}
+    - name: Mark repository as safe
+      run: git config --global --add safe.directory $GITHUB_WORKSPACE
     - uses: edlanglois/pkgbuild-action@v1
       id: makepkg
       with:
