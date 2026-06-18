@@ -16,6 +16,7 @@ makedepends=(
 	python-hatch-jupyter-builder
 	python-hatch-nodejs-version
 	nodejs
+	pnpm
 	# package
 	python-installer
 )
