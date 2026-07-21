@@ -20,6 +20,7 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import TypeVar
 
+    from githubkit.auth.token import TokenAuthStrategy
     from githubkit.rest import PullRequestSimple, ValidationError
     from nvchecker.util import RichResult
 
@@ -66,7 +67,7 @@ class Updater:
     repo_dir: Path
     pkgs_dir: Path
     _: KW_ONLY
-    gh_client: GitHub
+    gh_client: GitHub[TokenAuthStrategy]
     http_client: AsyncClient = field(default_factory=lambda: AsyncClient(http2=True))
     known_prs: MutableSequence[PullRequestSimple] = field(default_factory=list)
 
@@ -142,5 +143,8 @@ class Updater:
 
     async def create_branch(self, name: str, newver: str) -> str:
         branch = f"update-{name}-to-{newver}"
-        await create_branch(self.repo_dir, self.pkgs_dir / name, branch, newver)
+        token = self.gh_client.auth.token
+        await create_branch(
+            self.repo_dir, self.pkgs_dir / name, branch, newver, gh_token=token
+        )
         return branch
