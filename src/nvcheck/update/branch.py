@@ -98,7 +98,7 @@ class RemoteCallbacks(pygit2.RemoteCallbacks):
     future: asyncio.Future = field(default_factory=asyncio.Future)
 
     def credentials(
-        self, url: str, _username_from_url: str | None, _allowed_types: CredentialType
+        self, url: str, username_from_url: str | None, allowed_types: CredentialType
     ) -> _Credentials:
         return pygit2.UserPass("x-access-token", self.gh_token)
 
