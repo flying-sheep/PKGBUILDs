@@ -23,5 +23,7 @@ class CustomBuildHook(BuildHookInterface):
             overwrite=True,
             output_path=HERE / "src" / "aurweb_client",
         )
-        generate(config=cfg)
+        if e_data := generate(config=cfg):
+            errors = [RuntimeError(f"{e.header}: {e.detail}") for e in e_data]
+            raise ExceptionGroup("", errors) if len(errors) > 1 else errors[0]
         build_data["artifacts"] += ["src/aurweb_client"]
