@@ -16,10 +16,10 @@ jobs:
     if: ${{ !github.event.pull_request.draft }}
     steps:
     - run: pacman -Sy --noconfirm git
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with: { fetch-depth: 0, filter: blob:none }
     - run: ls
-    - uses: tj-actions/changed-files@v45
+    - uses: tj-actions/changed-files@v47
       id: changed-files
       with:
         dir_names: true
@@ -35,6 +35,6 @@ jobs:
       with:
         pkgdir: ${{ steps.changed-files.outputs.all_changed_files }}
         aurDeps: true
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v7
       with:
         path: ${{ steps.makepkg.outputs.pkgfile0 }}
