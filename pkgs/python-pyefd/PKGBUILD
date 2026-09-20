@@ -11,11 +11,6 @@ makedepends=(python-setuptools python-build python-installer)
 source=("$_name-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
 sha256sums=('9c1fa88337e90f65bdd0115d9c827cc31d638b6acda8c4c7d158293c59d99697')
 
-prepare() {
-	cd "${_name/-/_}-$pkgver"
-	sed -i 's/setup_requires=\["pytest-runner"\],//g' setup.py
-}
-
 build() {
 	cd "${_name/-/_}-$pkgver"
 	python -m build --wheel --no-isolation
