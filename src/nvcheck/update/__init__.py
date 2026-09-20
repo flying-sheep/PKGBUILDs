@@ -20,7 +20,7 @@ if TYPE_CHECKING:
     from pathlib import Path
     from typing import TypeVar
 
-    from githubkit.rest import PullRequestSimple, ValidationError
+    from githubkit_schemas.latest.models import PullRequestSimple, ValidationError
     from nvchecker.util import RichResult
 
     T = TypeVar("T")
@@ -121,7 +121,9 @@ class Updater:
                 raise
 
         pr = self.find_pr(labels={label})
-        branch = await self.create_branch(name, new.version)
+        branch = await self.create_branch(
+            name, new.version, None if pr is None else pr.head.ref
+        )
         logger.info(
             "Creating PR" if pr is None else "Updating PR",
             package=name,
@@ -140,7 +142,10 @@ class Updater:
             **COMMON_ARGS, issue_number=pr.number, labels=[label]
         )
 
-    async def create_branch(self, name: str, newver: str) -> str:
-        branch = f"update-{name}-to-{newver}"
+    async def create_branch(
+        self, name: str, newver: str, branch: str | None = None
+    ) -> str:
+        # an existing PR’s head can’t be changed, so reuse its branch
+        branch = branch or f"update-{name}"
         await create_branch(self.repo_dir, self.pkgs_dir / name, branch, newver)
         return branch
