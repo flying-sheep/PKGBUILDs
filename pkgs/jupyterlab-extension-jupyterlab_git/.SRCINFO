@@ -7,6 +7,7 @@ pkgbase = jupyterlab-extension-jupyterlab_git
 	license = BSD
 	makedepends = python-hatchling
 	makedepends = python-hatch-jupyter-builder
+	makedepends = python-hatch-nodejs-version
 	makedepends = python-build
 	makedepends = python-installer
 	depends = jupyterlab
