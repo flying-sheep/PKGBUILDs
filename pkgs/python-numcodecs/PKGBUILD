@@ -12,6 +12,7 @@ makedepends=(
 	cython
 	meson-python
 	python-py-cpuinfo
+	python-setuptools-scm
 	python-build
 	python-installer
 	python-wheel

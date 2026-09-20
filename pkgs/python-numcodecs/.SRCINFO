@@ -8,6 +8,7 @@ pkgbase = python-numcodecs
 	makedepends = cython
 	makedepends = meson-python
 	makedepends = python-py-cpuinfo
+	makedepends = python-setuptools-scm
 	makedepends = python-build
 	makedepends = python-installer
 	makedepends = python-wheel
