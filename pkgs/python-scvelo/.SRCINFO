@@ -1,6 +1,6 @@
 pkgbase = python-scvelo
 	pkgdesc = Stochastic Single Cell RNA Velocity
-	pkgver = 0.3.3
+	pkgver = 0.3.4
 	pkgrel = 1
 	url = https://github.com/theislab/scvelo
 	arch = any
@@ -20,7 +20,7 @@ pkgbase = python-scvelo
 	depends = python-pandas>=1.4.1
 	depends = python-scikit-learn>=0.21.2
 	depends = python-matplotlib>=3.3.0
-	source = https://files.pythonhosted.org/packages/source/s/scvelo/scvelo-0.3.3.tar.gz
-	sha256sums = 9383a8712f81f0f2d2f1bddcfc81889ede06a0027de537b5b9af83ed821390c7
+	source = https://files.pythonhosted.org/packages/source/s/scvelo/scvelo-0.3.4.tar.gz
+	sha256sums = 9480c111105a33638152ea34d61e9e92aa1abc251bc31158601a8678ee4886b9
 
 pkgname = python-scvelo
