@@ -1,0 +1,33 @@
+name: nvcheck
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+  nvcheck:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+      with: { fetch-depth: 0, filter: blob:none }
+    - name: Configure git identity
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+    - name: Generate app token
+      id: app-token
+      uses: actions/create-github-app-token@v3
+      with:  # needs: Contents: write, Issues: write, Pull requests: write
+        client-id: ${{ secrets.NVCHECK_APP_ID }}
+        private-key: ${{ secrets.NVCHECK_APP_PRIVATE_KEY }}
+    - uses: actions/setup-python@v7
+      with:
+        python-version: '3.14'
+    - uses: hynek/setup-cached-uv@v2
+      with:
+        cache-dependency-path: pyproject.toml
+    - run: uv pip install --system -e .
+    - run: nvcheck
+      env:
+        GH_TOKEN: ${{ steps.app-token.outputs.token }}
