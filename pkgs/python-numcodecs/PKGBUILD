@@ -7,12 +7,11 @@ pkgdesc='A Python package providing buffer compression and transformation codecs
 arch=(x86_64)
 url="https://github.com/zarr-developers/$_name"
 license=(MIT)
-depends=(python-numpy python-py-cpuinfo python-typing_extensions)
+depends=(python-numpy python-typing_extensions)
 makedepends=(
 	cython
+	meson-python
 	python-py-cpuinfo
-	python-setuptools
-	python-setuptools-scm
 	python-build
 	python-installer
 	python-wheel
