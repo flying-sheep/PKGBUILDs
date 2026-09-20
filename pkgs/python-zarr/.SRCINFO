@@ -10,6 +10,7 @@ pkgbase = python-zarr
 	makedepends = python-build
 	makedepends = python-installer
 	depends = python-packaging
+	depends = python-msgspec
 	depends = python-numpy
 	depends = python-numcodecs
 	depends = python-google-crc32c
