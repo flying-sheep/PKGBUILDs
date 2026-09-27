@@ -33,8 +33,6 @@ pkgbase = python-conda
 	options = !emptydirs
 	backup = etc/conda/condarc
 	source = https://github.com/conda/conda/releases/download/26.7.2/conda-26.7.2.tar.gz
-	source = py-3.13-logging.patch::https://github.com/conda/conda/commit/62196c897df3d7aea7063d0c08d1bf6e6fd91600.patch
 	sha256sums = 3b9ba0833a52a65960bfd9c40238f9700f673a70a540351b5c6312eedc97ab98
-	sha256sums = ffb6ee9cc5572e1a24d547bcaf04ccf987a2f8a6c54321ccd242633454675743
 
 pkgname = python-conda
