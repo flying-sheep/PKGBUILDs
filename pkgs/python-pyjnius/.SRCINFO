@@ -14,8 +14,6 @@ pkgbase = python-pyjnius
 	depends = java-environment
 	depends = python-six
 	source = https://files.pythonhosted.org/packages/source/p/pyjnius/pyjnius-1.9.0.tar.gz
-	source = cython-version.patch
 	sha256sums = 038511848c8a4c6a85b8788274b7eec4b2c78ecd5651cd05b8ea864a42c22d64
-	sha256sums = 70a518662c51acc3fda703a0909bb6e0f7af7c4610888a0d09e1e6968cbdd49a
 
 pkgname = python-pyjnius
