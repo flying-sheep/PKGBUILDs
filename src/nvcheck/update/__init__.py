@@ -120,9 +120,10 @@ class Updater:
             if len(errors) != 1 or errors[0].code != "already_exists":
                 raise
 
+        title = f"chore: update package {name} from {oldver} to {new.version}"
         pr = self.find_pr(labels={label})
         branch = await self.create_branch(
-            name, new.version, None if pr is None else pr.head.ref
+            name, new.version, title, None if pr is None else pr.head.ref
         )
         logger.info(
             "Creating PR" if pr is None else "Updating PR",
@@ -135,7 +136,6 @@ class Updater:
             if pr is None
             else partial(self.gh_client.rest.pulls.async_update, pull_number=pr.number)
         )
-        title = f"Update package {name} from {oldver} to {new.version}"
         data = PrUpdateable(title=title, base="main", body=msg)
         pr = (await do_req(**COMMON_ARGS, **data)).parsed_data
         await self.gh_client.rest.issues.async_add_labels(
@@ -143,9 +143,9 @@ class Updater:
         )
 
     async def create_branch(
-        self, name: str, newver: str, branch: str | None = None
+        self, name: str, newver: str, msg: str, branch: str | None = None
     ) -> str:
         # an existing PR’s head can’t be changed, so reuse its branch
         branch = branch or f"update-{name}"
-        await create_branch(self.repo_dir, self.pkgs_dir / name, branch, newver)
+        await create_branch(self.repo_dir, self.pkgs_dir / name, branch, newver, msg)
         return branch

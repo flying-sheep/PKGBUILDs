@@ -26,7 +26,7 @@ logger = cast(
 
 
 async def create_branch(
-    repo_dir: Path, pkg_dir: Path, branch: str, newver: str
+    repo_dir: Path, pkg_dir: Path, branch: str, newver: str, msg: str
 ) -> None:
     original_repo = pygit2.Repository(str(repo_dir))
     origin = original_repo.remotes["origin"]
@@ -71,7 +71,7 @@ async def create_branch(
             repo.head.name,
             repo.default_signature,
             repo.default_signature,
-            f"v{newver}",
+            msg,
             tree,
             [parent],
         )

@@ -38,7 +38,9 @@ envs.default.installer = "uv"
 envs.default.extra-dependencies = [ "types-pygit2" ]
 envs.default.scripts.pkg-add = "git subtree add -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
 envs.default.scripts.pkg-pull = "git subtree pull -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
-envs.default.scripts.pkg-push = "git subtree push --rejoin -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master"
+envs.default.scripts.pkg-push = """\
+  git subtree push --rejoin -P pkgs/{args} ssh://aur@aur.archlinux.org/{args}.git master && git push\
+  """
 
 [tool.ruff]
 src = [ "src" ]
