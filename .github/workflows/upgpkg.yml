@@ -5,36 +5,39 @@ on:
     paths:
     - 'pkgs/**'
 
+permissions:
+  contents: read
+
 jobs:
   linux:
     runs-on: ubuntu-latest
     container:
-      image: archlinux
+      image: archlinux  # zizmor: ignore[unpinned-images]
       options: --privileged
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup
     if: ${{ !github.event.pull_request.draft }}
     steps:
     - run: pacman -Sy --noconfirm git
-    - uses: actions/checkout@v7
-      with: { fetch-depth: 0, filter: blob:none }
+    - uses: actions/checkout@v7.0.1
+      with: { fetch-depth: 0, filter: blob:none, persist-credentials: false }
     - run: ls
-    - uses: tj-actions/changed-files@v47
+    - uses: tj-actions/changed-files@v47.0.0
       id: changed-files
       with:
         dir_names: true
         dir_names_include_files: pkgs/*
         files: pkgs/**
-    - uses: flying-sheep/check@v1
+    - uses: flying-sheep/check@v1.0.5
       with:
         success: ${{ fromJson(steps.changed-files.outputs.all_changed_files_count) == 1 }}
     - name: Mark repository as safe
       run: git config --global --add safe.directory $GITHUB_WORKSPACE
-    - uses: edlanglois/pkgbuild-action@v1
+    - uses: edlanglois/pkgbuild-action@v1.1.8
       id: makepkg
       with:
         pkgdir: ${{ steps.changed-files.outputs.all_changed_files }}
         aurDeps: true
-    - uses: actions/upload-artifact@v7
+    - uses: actions/upload-artifact@v7.0.2
       with:
         path: ${{ steps.makepkg.outputs.pkgfile0 }}

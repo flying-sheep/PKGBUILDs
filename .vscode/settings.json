@@ -1,16 +1,16 @@
 {
-    "python.analysis.typeCheckingMode": "basic",
-    "python.analysis.inlayHints.variableTypes": true,
-    "python.terminal.activateEnvironment": false,
-    "[python]": {
-        "editor.wordBasedSuggestions": "off",
-        "editor.defaultFormatter": "charliermarsh.ruff",
-        "editor.formatOnSave": true,
-        "editor.codeActionsOnSave": {
-            "source.fixAll": "always",
-            "source.organizeImports": "always",
-        },
-    },
-    "python-envs.defaultEnvManager": "pypa.hatch:hatch",
-    "python-envs.defaultPackageManager": "pypa.hatch:hatch",
+	"python.analysis.typeCheckingMode": "basic",
+	"python.analysis.inlayHints.variableTypes": true,
+	"python.terminal.activateEnvironment": false,
+	"[python]": {
+		"editor.wordBasedSuggestions": "off",
+		"editor.defaultFormatter": "charliermarsh.ruff",
+		"editor.formatOnSave": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll": "always",
+			"source.organizeImports": "always",
+		},
+	},
+	"python-envs.defaultEnvManager": "pypa.hatch:hatch",
+	"python-envs.defaultPackageManager": "pypa.hatch:hatch",
 }
