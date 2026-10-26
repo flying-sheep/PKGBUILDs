@@ -11,9 +11,9 @@ workflows:
     '.github/workflows/upgpkg.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/upload-artifact@v7.0.2'
-        - 'edlanglois/pkgbuild-action@v1.1.8'
+        - 'edlanglois/pkgbuild-action@v1.1.9'
         - 'flying-sheep/check@v1.0.5'
-        - 'tj-actions/changed-files@v47.0.0'
+        - 'tj-actions/changed-files@v47.0.6'
 dependencies:
     'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9':
         ref: 'v6.1.0'
@@ -40,9 +40,9 @@ dependencies:
         commit: 'sha1-cf430e030ddbb5b0abf93d22962f4752f3646cd9'
         owner_id: 44036562
         repo_id: 192625955
-    'edlanglois/pkgbuild-action@v1.1.8':
-        ref: 'v1.1.8'
-        commit: 'sha1-dea0017393fc774b7b2c661897e2a2506ac8aafc'
+    'edlanglois/pkgbuild-action@v1.1.9':
+        ref: 'v1.1.9'
+        commit: 'sha1-7c3f37eb6ce726f4c3a7d0df5865d0d176f08825'
         owner_id: 3248120
         repo_id: 259094932
     'flying-sheep/check@v1.0.5':
@@ -70,8 +70,8 @@ dependencies:
         commit: 'sha1-510c5e90c360a185039bea56ce8b3e7e51a16507'
         owner_id: 29506042
         repo_id: 496978345
-    'tj-actions/changed-files@v47.0.0':
-        ref: 'v47.0.0'
-        commit: 'sha1-24d32ffd492484c1d75e0c0b894501ddb9d30d62'
+    'tj-actions/changed-files@v47.0.6':
+        ref: 'v47.0.6'
+        commit: 'sha1-9426d40962ed5378910ee2e21d5f8c6fcbf2dd96'
         owner_id: 67116787
         repo_id: 344672439

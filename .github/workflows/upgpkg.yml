@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v7.0.1
       with: { fetch-depth: 0, filter: blob:none, persist-credentials: false }
     - run: ls
-    - uses: tj-actions/changed-files@v47.0.0
+    - uses: tj-actions/changed-files@v47.0.6
       id: changed-files
       with:
         dir_names: true
@@ -33,7 +33,7 @@ jobs:
         success: ${{ fromJson(steps.changed-files.outputs.all_changed_files_count) == 1 }}
     - name: Mark repository as safe
       run: git config --global --add safe.directory $GITHUB_WORKSPACE
-    - uses: edlanglois/pkgbuild-action@v1.1.8
+    - uses: edlanglois/pkgbuild-action@v1.1.9
       id: makepkg
       with:
         pkgdir: ${{ steps.changed-files.outputs.all_changed_files }}
