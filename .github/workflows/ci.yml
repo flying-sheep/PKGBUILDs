@@ -13,28 +13,28 @@ jobs:
   linux:
     runs-on: ubuntu-latest
     container:
-      image: archlinux  # zizmor: ignore[unpinned-images]
+      image: archlinux # zizmor: ignore[unpinned-images]
       options: --privileged
       volumes:
         - /sys/fs/cgroup:/sys/fs/cgroup
     strategy:
       matrix:
-        python-version: ['3.12']
+        python-version: ["3.12"]
     steps:
-    - run: pacman -Sy --noconfirm git base-devel
-    - uses: actions/checkout@v7.0.1
-      with: { fetch-depth: 0, filter: blob:none, persist-credentials: false }
-    - uses: actions/setup-python@v7.0.0
-      with:
-        python-version: ${{ matrix.python-version }}
-    - uses: hynek/setup-cached-uv@v2.6.0
-      with:
-        cache-dependency-path: pyproject.toml
-    - run: uv pip install --system -e .[test] pytest-md
-    - uses: pavelzw/pytest-action@v2.2.0
-      with:
-        custom-arguments: --color=yes
-        click-to-expand: false
-        verbose: true
-        job-summary: true
-        emoji: false
+      - run: pacman -Sy --noconfirm git base-devel
+      - uses: actions/checkout@v7.0.1
+        with: { fetch-depth: 0, filter: blob:none, persist-credentials: false }
+      - uses: actions/setup-python@v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: hynek/setup-cached-uv@v2.6.0
+        with:
+          cache-dependency-path: pyproject.toml
+      - run: uv pip install --system -e .[test] pytest-md
+      - uses: pavelzw/pytest-action@v2.2.0
+        with:
+          custom-arguments: --color=yes
+          click-to-expand: false
+          verbose: true
+          job-summary: true
+          emoji: false
