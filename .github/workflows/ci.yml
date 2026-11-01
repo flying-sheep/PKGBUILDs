@@ -24,7 +24,7 @@ jobs:
       - run: pacman -Sy --noconfirm git base-devel
       - uses: actions/checkout@v7.0.1
         with: { fetch-depth: 0, filter: blob:none, persist-credentials: false }
-      - uses: actions/setup-python@v7.0.0
+      - uses: actions/setup-python@v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
       - uses: hynek/setup-cached-uv@v2.6.0
