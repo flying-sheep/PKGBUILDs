@@ -18,9 +18,11 @@ classifiers = [
 ]
 dynamic = [ "version" ]
 dependencies = [
-  "attrs",                    # for generated client
+  "attrs",                     # for generated client
   "githubkit",
+  "hishel[async,httpx2]>=1.4", # githubkit deprecated httpx
   "httpx[brotli,http2,zstd]",
+  "httpx2",
   "nvchecker[pypi]>=2.16",
   "packaging",
   "pyalpm",
