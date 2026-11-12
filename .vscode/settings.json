@@ -13,4 +13,12 @@
 	},
 	"python-envs.defaultEnvManager": "pypa.hatch:hatch",
 	"python-envs.defaultPackageManager": "pypa.hatch:hatch",
+	"[json][jsonc][yaml]": {
+		"editor.defaultFormatter": "biomejs.biome",
+		"editor.formatOnSave": true,
+	},
+	"[markdown]": {
+		"editor.defaultFormatter": "jolars.panache",
+		"editor.formatOnSave": true,
+	},
 }
